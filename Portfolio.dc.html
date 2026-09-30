@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-b6395b8d-a3de-4d4b-be8f-bb98f19b74cb/styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<script src="_ds/industry-b6395b8d-a3de-4d4b-be8f-bb98f19b74cb/_ds_bundle.js"></script>
+<style>
+:root{--color-bg:#070a07;--color-surface:#0e130e;--color-text:#c6f2cb;--color-accent:#3ddc68;--color-accent-2:#3ddc68;--color-divider:color-mix(in srgb,#c6f2cb 18%,transparent);
+--color-accent-100:#e4ffe8;--color-accent-200:#bff5c9;--color-accent-300:#8cedA2;--color-accent-400:#5fe07e;--color-accent-500:#3ddc68;--color-accent-600:#2fb855;--color-accent-700:#56e27a;--color-accent-800:#123a1c;--color-accent-900:#030603;
+--color-neutral-100:#101510;--color-neutral-200:#182019;--color-neutral-300:#243025;--color-neutral-400:#374539;--color-neutral-500:#4b5f4e;--color-neutral-600:#6f8a73;--color-neutral-700:#8fab93;--color-neutral-800:#b1cab4;--color-neutral-900:#d3e6d5}
+h1,h2{text-shadow:0 0 22px color-mix(in srgb,var(--color-accent) 35%,transparent)}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text)}
+a{color:var(--color-accent-700);text-decoration:none;border-bottom:1px solid var(--color-accent-300)}
+a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
+@keyframes blink{50%{opacity:0}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes glitchA{0%,90%,100%{transform:none;clip-path:inset(100% 0 0 0)}91%{transform:translate(-8px,2px);clip-path:inset(18% 0 58% 0)}93%{transform:translate(6px,-2px);clip-path:inset(62% 0 8% 0)}95%{transform:translate(-4px,0);clip-path:inset(38% 0 36% 0)}96%{clip-path:inset(100% 0 0 0)}}
+@keyframes glitchB{0%,86%,100%{transform:none;clip-path:inset(100% 0 0 0)}87%{transform:translate(7px,1px);clip-path:inset(8% 0 70% 0)}89%{transform:translate(-5px,-1px);clip-path:inset(48% 0 22% 0)}91%{clip-path:inset(100% 0 0 0)}}
+@keyframes scan{from{top:4%}to{top:94%}}
+@keyframes stepOn{0%,28%,100%{border-color:var(--color-divider);background:transparent}6%,22%{border-color:var(--color-accent);background:var(--color-accent-800)}}
+@keyframes ripple{0%{transform:translate(-50%,-50%) scale(.1);opacity:.9}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes pkt{0%{transform:translate(var(--x1),var(--y1));opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translate(var(--x2),var(--y2));opacity:0}}
+@keyframes sweep{0%{transform:translateY(-10vh)}100%{transform:translateY(110vh)}}
+</style>
+</helmet>
+
+<sc-if value="{{ bootVisible }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ skipBoot }}" style="position:fixed;inset:0;z-index:100;background:var(--color-accent-900);color:var(--color-accent-100);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.7;padding:clamp(20px,5vw,56px);overflow:hidden;cursor:pointer;transform:{{ bootY }};transition:transform .8s cubic-bezier(.7,0,.2,1)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;color:var(--color-accent-400);border-bottom:1px solid var(--color-accent-700);padding-bottom:10px;margin-bottom:16px">
+      <span>KA-BIOS rev 9.22.2026</span><span>click or press any key to skip</span>
+    </div>
+    <sc-for list="{{ bootLines }}" as="l">
+      <div style="display:flex;gap:12px;white-space:pre-wrap"><span style="color:var(--color-accent-400);min-width:52px">{{ l.tag }}</span><span>{{ l.text }}</span></div>
+    </sc-for>
+    <span style="display:inline-block;width:9px;height:16px;background:var(--color-accent-300);animation:blink 1s steps(1) infinite;margin-top:4px"></span>
+  </div>
+</sc-if>
+
+<sc-if value="{{ scanlines }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.28) 2px 3px)"></div>
+  <div style="position:fixed;left:0;right:0;top:0;height:14vh;z-index:91;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--color-accent) 7%,transparent),transparent);animation:sweep 7s linear infinite"></div>
+</sc-if>
+
+<div ref="{{ crossRef }}" style="position:fixed;left:0;top:0;z-index:95;pointer-events:none;opacity:0;transition:opacity .3s;will-change:transform">
+  <div style="position:absolute;left:-16px;top:0;width:32px;height:1px;background:var(--color-accent)"></div>
+  <div style="position:absolute;left:0;top:-16px;width:1px;height:32px;background:var(--color-accent)"></div>
+  <div ref="{{ ringRef }}" style="position:absolute;left:-7px;top:-7px;width:14px;height:14px;border:1px solid var(--color-accent);transition:transform .35s cubic-bezier(.2,.7,.2,1),background .3s"></div>
+  <span ref="{{ crossLbl }}" style="position:absolute;left:14px;top:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-accent-700);white-space:nowrap"></span>
+</div>
+
+<sc-if value="{{ xl }}" hint-placeholder-val="{{ false }}">
+  <nav style="position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:55;display:grid;gap:12px">
+    <sc-for list="{{ rail }}" as="r">
+      <button onClick="{{ r.go }}" title="{{ r.label }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ r.fg }};transition:color .3s">
+        <span style="opacity:{{ r.lo }};transition:opacity .3s">{{ r.num }}</span>
+        <span style="height:1px;width:{{ r.w }};background:{{ r.bg }};transition:width .6s cubic-bezier(.2,.7,.2,1),background .3s"></span>
+      </button>
+    </sc-for>
+  </nav>
+</sc-if>
+
+<header ref="{{ headerRef }}" style="transition:transform .45s cubic-bezier(.2,.7,.2,1);position:sticky;top:0;z-index:50;background:var(--color-bg);border-bottom:1px solid var(--color-divider)">
+  <div style="max-width:1240px;margin:0 auto;padding:12px clamp(16px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
+    <button onClick="{{ goTop }}" style="all:unset;cursor:pointer;display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:22px;letter-spacing:.02em;color:var(--color-accent)">KA://</span>
+      <span style="color:var(--color-neutral-700)">khizar@lab:~</span>
+    </button>
+    <nav style="display:flex;flex-wrap:nowrap;gap:2px;flex:1 1 520px;min-width:0;overflow-x:auto;scrollbar-width:none;margin:0 -8px">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <button onClick="{{ n.go }}" onMouseEnter="{{ n.hov }}" style="all:unset;cursor:pointer;padding:8px;white-space:nowrap;flex:none;color:var(--color-neutral-800)" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:16px;color:var(--color-neutral-700);white-space:nowrap">
+        <span style="color:var(--color-accent-700)">{{ scrollBar }}</span>
+        <span>{{ clock }}</span>
+      </div>
+    </sc-if>
+  </div>
+</header>
+
+<main ref="{{ mainRef }}" style="transform-origin:50% 0;max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 200px">
+
+  <section ref="{{ heroRef }}" id="top" data-sec="hero" style="perspective:1200px;background:radial-gradient(560px circle at var(--mx,70%) var(--my,40%),color-mix(in srgb,var(--color-accent) 10%,transparent),transparent 70%);position:relative;z-index:0;padding:clamp(40px,8vw,96px) 0 clamp(48px,8vw,96px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:48px;align-items:end">
+    <canvas ref="{{ rainRef }}" style="position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.28;-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%)"></canvas>
+    <div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:18px;letter-spacing:.04em">[ PID 2077 ] · SUGAR LAND, TX · UP {{ uptime }}</div>
+      <h1 data-par="-0.07" onMouseEnter="{{ glitch }}" title="hover to re-decode" style="cursor:crosshair;font-size:clamp(72px,13vw,176px);line-height:.84;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 32px">
+        <span style="display:block">{{ name1 }}</span>
+        <span style="display:block;color:var(--color-accent)">{{ name2 }}</span>
+      </h1>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:var(--color-neutral-700);margin-bottom:10px;min-height:1.6em"><span style="color:var(--color-accent-700)">khizar@lab:~$ </span>{{ heroCmd }}</div>
+      <p style="font-size:clamp(17px,1.6vw,20px);line-height:1.55;max-width:60ch;margin:0 0 28px;min-height:5.5em;text-wrap:pretty">{{ bio }}<span style="display:inline-block;width:.5em;height:1em;background:var(--color-accent);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite"></span></p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;opacity:{{ rv.hero.o }};transform:{{ rv.hero.t }};transition:opacity .6s ease .2s,transform .7s cubic-bezier(.2,.7,.2,1) .2s">
+        <a class="btn btn-primary blueprint" href="uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf" target="_blank" style="border-bottom:none;white-space:nowrap;flex:none">./resume.pdf<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
+        <button class="btn btn-secondary" onClick="{{ goContact }}">$ contact --now</button>
+      </div>
+    </div>
+
+    <div data-tilt="0.7" class="blueprint" style="padding:22px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;opacity:{{ rv.hero.o }};transform:{{ rv.hero.t }};transition:opacity .7s ease .4s,transform .8s cubic-bezier(.2,.7,.2,1) .4s">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;justify-content:space-between;color:var(--color-neutral-700);border-bottom:1px solid var(--color-divider);padding-bottom:10px;margin-bottom:12px"><span>$ sysinfo</span><span>FIG. 01</span></div>
+      <sc-for list="{{ sysinfo }}" as="s" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;padding:5px 0;opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .4s ease {{ s.d }},transform .5s ease {{ s.d }}">
+          <span style="color:var(--color-accent-700)">{{ s.k }}</span><span>{{ s.v }}</span>
+        </div>
+      </sc-for>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--color-divider);display:flex;gap:3px">
+        <sc-for list="{{ certBlocks }}" as="b" hint-placeholder-count="11">
+          <span style="flex:1;height:10px;background:var(--color-accent);opacity:{{ b.o }};transition:opacity .2s ease {{ b.d }}"></span>
+        </sc-for>
+      </div>
+      <div style="margin-top:6px;color:var(--color-neutral-700);font-size:11px">11 / 11 certification modules loaded</div>
+    </div>
+  </section>
+
+  <div style="margin:0 calc(-1 * clamp(16px,4vw,40px));border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);overflow:hidden;padding:12px 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:var(--color-accent-700)">
+    <div ref="{{ marqRef }}" style="display:flex;width:max-content;gap:40px;animation:marquee 60s linear infinite">
+      <sc-for list="{{ marquee }}" as="m" hint-placeholder-count="12">
+        <span style="display:flex;gap:40px;white-space:nowrap"><span>{{ m }}</span><span style="color:var(--color-neutral-500)">//</span></span>
+      </sc-for>
+    </div>
+  </div>
+
+  <section id="lab" data-sec="lab" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.lab }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">01 — ~/homelab · 2022 – Present</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.lab }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ ssh root@lapprox.home.lab</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start;perspective:1400px">
+      <figure data-tilt="0.5" class="blueprint" style="margin:0;padding:16px;opacity:{{ rv.lab.o }};transform:{{ rv.lab.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <svg viewBox="0 0 640 404" style="display:block;width:100%;height:auto;font-family:'JetBrains Mono',ui-monospace,monospace">
+          <g stroke="var(--color-neutral-500)" stroke-width="1" fill="none">
+            <line x1="320" y1="48" x2="320" y2="72"></line>
+            <line x1="320" y1="112" x2="320" y2="136"></line>
+            <line x1="320" y1="176" x2="320" y2="200"></line>
+            <path d="M320 240 V258 M80 258 H560 M80 258 V282 M240 258 V282 M400 258 V282 M560 258 V282"></path>
+            <path d="M180 156 H200 V92 H225"></path>
+            <line x1="180" y1="92" x2="200" y2="92"></line>
+            <line x1="415" y1="92" x2="470" y2="92" stroke-dasharray="4 3"></line>
+            <path d="M415 220 H545 V112" stroke-dasharray="4 3"></path>
+          </g>
+          <g fill="none" stroke-width="1">
+            <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="72" width="190" height="40" fill="{{ lab.br0.f }}" stroke="{{ lab.br0.s }}" onMouseEnter="{{ lab.br0.on }}" onClick="{{ lab.br0.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="470" y="72" width="160" height="40" fill="{{ lab.siem.f }}" stroke="{{ lab.siem.s }}" onMouseEnter="{{ lab.siem.on }}" onClick="{{ lab.siem.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="72" width="170" height="40" fill="{{ lab.nix.f }}" stroke="{{ lab.nix.s }}" onMouseEnter="{{ lab.nix.on }}" onClick="{{ lab.nix.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="136" width="170" height="40" fill="{{ lab.vpn.f }}" stroke="{{ lab.vpn.s }}" onMouseEnter="{{ lab.vpn.on }}" onClick="{{ lab.vpn.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="136" width="190" height="40" fill="{{ lab.pf.f }}" stroke="{{ lab.pf.s }}" onMouseEnter="{{ lab.pf.on }}" onClick="{{ lab.pf.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="200" width="190" height="40" fill="{{ lab.br1.f }}" stroke="{{ lab.br1.s }}" onMouseEnter="{{ lab.br1.on }}" onClick="{{ lab.br1.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="282" width="140" height="76" fill="{{ lab.nat.f }}" stroke="{{ lab.nat.s }}" onMouseEnter="{{ lab.nat.on }}" onClick="{{ lab.nat.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="170" y="282" width="140" height="76" fill="{{ lab.v80.f }}" stroke="{{ lab.v80.s }}" onMouseEnter="{{ lab.v80.on }}" onClick="{{ lab.v80.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="330" y="282" width="140" height="76" fill="{{ lab.v666.f }}" stroke="{{ lab.v666.s }}" onMouseEnter="{{ lab.v666.on }}" onClick="{{ lab.v666.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="490" y="282" width="140" height="76" fill="{{ lab.v999.f }}" stroke="{{ lab.v999.s }}" onMouseEnter="{{ lab.v999.on }}" onClick="{{ lab.v999.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+          </g>
+          <g font-size="12" fill="var(--color-text)" text-anchor="middle" pointer-events="none">
+            <text x="320" y="33">home router · WAN</text>
+            <text x="320" y="97">vmbr0 · OVS bridge</text>
+            <text x="550" y="97">Wazuh SIEM + NIDS</text>
+            <text x="95" y="97">NixOS · Portainer</text>
+            <text x="95" y="161">WireGuard · OpenVPN</text>
+            <text x="320" y="161">pfSense VM</text>
+            <text x="320" y="225">vmbr1 · VLAN trunk</text>
+            <text x="80" y="304">NATIVE</text>
+            <text x="240" y="304">VLAN 80</text>
+            <text x="400" y="304">VLAN 666</text>
+            <text x="560" y="304">VLAN 999</text>
+          </g>
+          <g font-size="10.5" fill="var(--color-accent-700)" text-anchor="middle" pointer-events="none">
+            <text x="80" y="322">10.0.0.0/24</text><text x="80" y="340" fill="var(--color-neutral-700)">Kali Linux</text>
+            <text x="240" y="322">10.80.80.0/24</text><text x="240" y="340" fill="var(--color-neutral-700)">Active Directory lab</text>
+            <text x="400" y="322">10.6.6.0/24</text><text x="400" y="340" fill="var(--color-neutral-700)">untrusted · internet</text>
+            <text x="560" y="322">10.9.9.0/24</text><text x="560" y="340" fill="var(--color-neutral-700)">isolated · Kali only</text>
+            <text x="442" y="86" font-size="9">SPAN</text>
+            <text x="95" y="64" font-size="9">SELF-HOSTED · PROD</text>
+          </g>
+          <g fill="var(--color-accent)">
+            <circle r="3.5" style="--x1:320px;--y1:48px;--x2:320px;--y2:72px;animation:pkt 1.6s linear 0s infinite"></circle>
+            <circle r="3.5" style="--x1:320px;--y1:112px;--x2:320px;--y2:136px;animation:pkt 1.6s linear 0.5s infinite"></circle>
+            <circle r="3.5" style="--x1:320px;--y1:176px;--x2:320px;--y2:200px;animation:pkt 1.6s linear 1s infinite"></circle>
+            <circle r="3.5" style="--x1:320px;--y1:240px;--x2:320px;--y2:258px;animation:pkt 1s linear 0.3s infinite"></circle>
+            <circle r="3.5" style="--x1:320px;--y1:258px;--x2:80px;--y2:258px;animation:pkt 2.2s linear 0.6s infinite"></circle>
+            <circle r="3.5" style="--x1:320px;--y1:258px;--x2:560px;--y2:258px;animation:pkt 2.2s linear 1.3s infinite"></circle>
+            <circle r="3.5" style="--x1:240px;--y1:258px;--x2:240px;--y2:282px;animation:pkt 1.2s linear 1.1s infinite"></circle>
+            <circle r="3.5" style="--x1:400px;--y1:258px;--x2:400px;--y2:282px;animation:pkt 1.2s linear 0.2s infinite"></circle>
+            <circle r="3.5" style="--x1:415px;--y1:92px;--x2:470px;--y2:92px;animation:pkt 1.4s linear 0.8s infinite"></circle>
+            <circle r="3.5" style="--x1:180px;--y1:92px;--x2:225px;--y2:92px;animation:pkt 1.2s linear 1.5s infinite"></circle>
+          </g>
+          <text x="10" y="392" font-size="10" fill="var(--color-neutral-600)">FIG. 02 — lapprox.home.lab · hover a node</text>
+        </svg>
+        <div style="border-top:1px solid var(--color-divider);margin-top:12px;padding-top:12px;min-height:5.2em">
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">$ ssh {{ labInfo.host }}<span style="display:inline-block;width:7px;height:13px;background:var(--color-accent);vertical-align:-2px;margin-left:4px;animation:blink 1s steps(1) infinite"></span></div>
+          <div style="font-size:15px;line-height:1.5;margin-top:4px;text-wrap:pretty">{{ labInfo.text }}</div>
+        </div>
+      </figure>
+      <div style="display:grid;gap:0">
+        <sc-for list="{{ labItems }}" as="b" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:16px 0;border-bottom:1px solid var(--color-divider);opacity:{{ b.o }};transform:{{ b.t }};transition:opacity .5s ease {{ b.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ b.d }}">
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);padding-top:3px">{{ b.n }}</span>
+            <span style="font-size:16px;line-height:1.55;text-wrap:pretty">{{ b.t2 }}</span>
+          </div>
+        </sc-for>
+        <a href="https://benheater.com/proxmox-cybersecurity-lab/" target="_blank" style="justify-self:start;margin-top:16px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">↗ benheater.com/proxmox-cybersecurity-lab</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="certs" data-sec="certs" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:24px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.certs }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">02 — ~/certs</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.certs }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <button onClick="{{ f.pick }}" style="all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--color-divider);background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700);margin-bottom:10px">$ ls -la ~/certs --sort=date {{ filterFlag }} · total {{ certCount }}</div>
+    <div style="overflow-x:auto">
+      <div style="min-width:{{ certMin }}">
+        <sc-for list="{{ certRows }}" as="c" hint-placeholder-count="11">
+          <div style="display:grid;grid-template-columns:{{ certCols }};gap:6px 16px;align-items:baseline;padding:12px 8px;border-bottom:1px solid var(--color-divider);opacity:{{ c.o }};transform:{{ c.t }};transition:opacity .45s ease {{ c.d }},transform .55s cubic-bezier(.2,.7,.2,1) {{ c.d }},background .2s,padding .3s cubic-bezier(.2,.7,.2,1)" style-hover="background:var(--color-accent-800);padding-left:22px">
+            <span style="display:{{ permDisp }};font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-600)">-r--r--r--</span>
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">{{ c.v }}</span>
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">{{ c.ds }}</span>
+            <span style="grid-column:{{ spanCol }};font-family:var(--font-heading);font-weight:600;font-size:21px;line-height:1.1">{{ c.n }}</span>
+            <span style="grid-column:{{ spanCol }};font-size:14px;color:var(--color-neutral-800)">{{ c.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" data-sec="projects" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.projects }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">03 — ~/src</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.projects }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ git log --author=khizar</div>
+    </div>
+    <article data-tilt="0.4" class="blueprint" style="margin-bottom:40px;padding:clamp(20px,3vw,32px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:32px 40px;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)"><span>nasa / lunar-base-net</span><span class="tag tag-outline" style="white-space:nowrap;height:auto">team lead</span></div>
+        <h3 style="font-size:clamp(34px,4.4vw,54px);line-height:.95;text-transform:uppercase;margin:0">NASA Pre-Apprenticeship — Moon Base Network</h3>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">through Houston City College</div>
+        <p style="font-size:17px;line-height:1.55;margin:0;text-wrap:pretty">Designing a network for the moon base. The project is about building a network around the moon's conditions, from choosing hardware that won't overheat without air to cool it and can handle the extreme temperature swings, to deciding which types of networks make sense there and building proper cybersecurity principles into the design.</p>
+        <p style="font-size:17px;line-height:1.55;margin:0;text-wrap:pretty">That work also extends to the base's Wi-Fi, where we're exploring whether it could double as a way to locate instruments and equipment, and studying the variables that affect how it would perform on the lunar surface.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px;margin-top:auto">
+          <sc-for list="{{ nasaMods }}" as="x" hint-placeholder-count="4">
+            <div style="border:1px solid var(--color-divider);padding:10px 12px;opacity:{{ x.o }};transform:{{ x.t }};transition:opacity .45s ease {{ x.d }},transform .55s cubic-bezier(.2,.7,.2,1) {{ x.d }}" style-hover="border-color:var(--color-accent);background:var(--color-accent-800)">
+              <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ x.id }}</div>
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-transform:uppercase;line-height:1.1">{{ x.name }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <figure style="margin:0;display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div style="position:relative;aspect-ratio:4/3;border:1px dashed var(--color-neutral-500);overflow:hidden;background:repeating-linear-gradient(0deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px)">
+          <sc-for list="{{ ripples }}" as="r" hint-placeholder-count="3">
+            <span style="position:absolute;left:50%;top:55%;width:140%;aspect-ratio:1;border:1px solid var(--color-accent);border-radius:50%;animation:ripple 3.6s cubic-bezier(.2,.6,.3,1) {{ r.d }} infinite"></span>
+          </sc-for>
+          <span style="position:absolute;left:50%;top:55%;width:14px;height:14px;transform:translate(-50%,-50%) rotate(45deg);background:var(--color-accent);box-shadow:0 0 16px var(--color-accent)"></span>
+          <span style="position:absolute;left:50%;top:55%;transform:translate(14px,8px);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-accent-700)">AP-01</span>
+          <sc-for list="{{ instruments }}" as="i" hint-placeholder-count="5">
+            <div style="position:absolute;left:{{ i.x }};top:{{ i.y }};display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-text)">
+              <span style="width:8px;height:8px;border:1px solid var(--color-accent);background:{{ i.bg }};transition:background .3s"></span><span>{{ i.label }}</span>
+            </div>
+          </sc-for>
+          <div style="position:absolute;left:10px;top:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-neutral-700)">wifi-locate · {{ locFound }}</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
+          <div>
+            <div style="font-size:10px;color:var(--color-neutral-700)">SURFACE TEMP (APPROX.)</div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:1;color:var(--color-accent)">{{ moonTemp }}</div>
+          </div>
+          <div style="flex:1 1 160px;max-width:240px">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--color-neutral-700)"><span>−173°C</span><span>127°C</span></div>
+            <div style="height:6px;border:1px solid var(--color-divider);margin-top:4px;position:relative"><span style="position:absolute;top:-3px;width:2px;height:10px;background:var(--color-accent);left:{{ moonPct }}"></span></div>
+          </div>
+        </div>
+        <figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-neutral-600)">FIG. 04 — Wi-Fi as a locator · lunar day/night swing</figcaption>
+      </figure>
+    </article>
+    <div style="perspective:1400px">
+      <article data-tilt="0.3" class="blueprint" style="padding:18px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px 32px;align-items:center;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)"><span>khizarahmed9 / repo</span><span class="tag tag-outline" style="white-space:nowrap;height:auto">fork · Actual Budget</span></div>
+          <h3 style="font-size:30px;line-height:1;text-transform:uppercase;margin:0">Wayne Finance</h3>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-800)"><span style="flex:none;width:8px;height:8px;background:var(--color-accent);animation:pulse 1.4s ease-in-out infinite"></span><span>Built for HackRice 2026 over the weekend</span></div>
+          <p style="font-size:15px;line-height:1.5;margin:0;text-wrap:pretty">Actual Budget fork which adds AI and auto receipt ingestion and a PWA mobile app and simplifies usage</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ feats }}" as="x" hint-placeholder-count="4">
+              <span class="tag tag-outline" style="height:auto;padding:4px 10px;opacity:{{ x.o }};transform:{{ x.t }};transition:opacity .45s ease {{ x.d }},transform .55s cubic-bezier(.2,.7,.2,1) {{ x.d }},background .2s" style-hover="background:var(--color-accent-800)">{{ x.name }}</span>
+            </sc-for>
+          </div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-neutral-800);overflow-wrap:anywhere;min-height:2.6em"><span style="color:var(--color-accent-700)">$ </span>{{ cloneLine }}<span style="display:inline-block;width:6px;height:12px;background:var(--color-accent);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(1) infinite"></span></div>
+          <a class="btn btn-secondary" href="https://github.com/khizarahmed9/hackrice-finance-thingy" target="_blank" style="align-self:flex-start;border-bottom:none;white-space:nowrap">View on GitHub ↗</a>
+        </div>
+      </article>
+    </div>
+  
+  </section>
+
+  <section id="skills" data-sec="skills" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.skills }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">04 — ~/skills</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.skills }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ lsmod | column · click a module to grep it</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:28px;perspective:1200px">
+      <sc-for list="{{ skills }}" as="s" hint-placeholder-count="8">
+        <div data-tilt="1" class="blueprint" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)" style="padding:18px 20px;opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .5s ease {{ s.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ s.d }}">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:6px">{{ s.id }}</div>
+          <h3 style="font-size:23px;text-transform:uppercase;margin:0 0 12px">{{ s.k }}</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ s.items }}" as="it">
+              <button class="tag tag-outline" onClick="{{ it.grep }}" title="grep this across the site" style="cursor:pointer;background:transparent;font-family:inherit" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ it.t }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="activity" data-sec="activity" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.activity }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">05 — ~/activity</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.activity }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ cat *.log</div>
+    </div>
+    <div class="blueprint" style="padding:clamp(20px,3vw,32px);margin-bottom:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:24px;align-items:end;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">ncl.log · April 2026</div>
+        <h3 style="font-size:30px;text-transform:uppercase;margin:6px 0 0">National Cyber League — Player</h3>
+      </div>
+      <sc-for list="{{ nclStats }}" as="s" hint-placeholder-count="3">
+        <div style="border-left:1px solid var(--color-divider);padding-left:18px">
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:clamp(56px,7vw,88px);line-height:.9;color:var(--color-accent)">{{ s.val }}</div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;margin-top:6px">{{ s.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;perspective:1200px">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+        <article data-tilt="1" class="card blueprint" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)" style="padding:20px 22px;opacity:{{ p.o }};transform:{{ p.t }};transition:opacity .5s ease {{ p.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ p.d }}">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:flex;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:8px"><span>{{ p.file }}</span><span>{{ p.when }}</span></div>
+          <h3 style="font-size:24px;text-transform:uppercase;margin:0 0 10px">{{ p.title }}</h3>
+          <sc-for list="{{ p.bullets }}" as="x">
+            <p style="font-size:15px;margin:0 0 8px;padding-left:16px;position:relative;text-wrap:pretty"><span style="position:absolute;left:0;color:var(--color-accent)">›</span>{{ x }}</p>
+          </sc-for>
+        </article>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="hackhcc" data-sec="hackhcc" style="padding:72px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;border-bottom:1px solid var(--color-divider);padding-bottom:14px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.hackhcc }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <span style="color:var(--color-accent-700)">06 — ~/hackhcc · organizer</span>
+      <span style="display:flex;align-items:center;gap:8px;color:var(--color-neutral-700)"><span style="flex:none;width:8px;height:8px;background:var(--color-accent);animation:pulse 1.4s ease-in-out infinite"></span>Chief Technology Officer · Computer Science Association · 2025 – Present</span>
+    </div>
+    <div data-par="-0.12" style="position:relative;margin:24px 0 8px;font-family:var(--font-heading);font-weight:600;font-size:clamp(60px,19vw,300px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;color:var(--color-accent);text-shadow:0 0 40px color-mix(in srgb,var(--color-accent) 40%,transparent)">
+      <span>{{ hackWord }}</span>
+      <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-accent-100);animation:glitchA 3.8s steps(1) infinite">{{ hackWord }}</span>
+      <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-neutral-500);animation:glitchB 5.1s steps(1) infinite">{{ hackWord }}</span>
+    </div>
+    <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(26px,3.4vw,44px);line-height:1.05;text-transform:uppercase;margin:0 0 40px;max-width:22ch;opacity:{{ rv.hackhcc.o }};transform:{{ rv.hackhcc.t }};transition:opacity .6s ease .3s,transform .7s cubic-bezier(.2,.7,.2,1) .3s">The first ever hackathon for Houston City College.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:28px;align-items:stretch">
+      <div style="display:grid;gap:20px;perspective:1200px">
+        <sc-for list="{{ hackMods }}" as="m" hint-placeholder-count="3">
+          <div data-tilt="1" class="blueprint" style="padding:18px 20px;opacity:{{ m.o }};transform:{{ m.t }};transition:opacity .5s ease {{ m.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ m.d }}" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <div style="display:flex;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:6px"><span>{{ m.id }}</span><span>{{ m.status }}</span></div>
+            <h3 style="font-size:28px;text-transform:uppercase;margin:0 0 12px">{{ m.name }}</h3>
+            <div style="height:6px;border:1px solid var(--color-divider)"><div style="height:100%;background:var(--color-accent);width:{{ m.w }};transition:width 1.4s cubic-bezier(.6,0,.2,1) {{ m.d2 }}"></div></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:var(--color-accent-900);border:1px solid var(--color-divider);padding:20px 22px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.8;min-height:280px">
+        <div style="display:flex;gap:6px;margin-bottom:14px"><span style="width:10px;height:10px;border:1px solid var(--color-accent-700)"></span><span style="width:10px;height:10px;border:1px solid var(--color-accent-700)"></span><span style="width:10px;height:10px;background:var(--color-accent)"></span><span style="margin-left:auto;font-size:11px;color:var(--color-neutral-700)">tty2 — launch.log</span></div>
+        <sc-for list="{{ hackLog }}" as="l">
+          <div style="display:flex;gap:12px;white-space:pre-wrap"><span style="color:var(--color-accent-400);min-width:52px">{{ l.tag }}</span><span style="color:var(--color-accent-100)">{{ l.text }}</span></div>
+        </sc-for>
+        <span style="display:inline-block;width:9px;height:16px;background:var(--color-accent-300);animation:blink 1s steps(1) infinite;margin-top:4px"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="volunteer" data-sec="volunteer" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.volunteer }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">07 — ~/volunteer</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.volunteer }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ history | grep -i role</div>
+    </div>
+    <sc-for list="{{ vol }}" as="v" hint-placeholder-count="2">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px 40px;padding:24px 0;border-bottom:1px solid var(--color-divider);opacity:{{ v.o }};transform:{{ v.t }};transition:opacity .5s ease {{ v.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ v.d }}">
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:4px">{{ v.when }}</div>
+          <h3 style="font-size:28px;text-transform:uppercase;margin:0">{{ v.role }}</h3>
+          <div style="font-size:15px;color:var(--color-neutral-700)">{{ v.org }}</div>
+        </div>
+        <div>
+          <sc-for list="{{ v.bullets }}" as="x">
+            <p style="font-size:15px;margin:0 0 8px;padding-left:16px;position:relative;text-wrap:pretty"><span style="position:absolute;left:0;color:var(--color-accent)">›</span>{{ x }}</p>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </section>
+
+  <section id="edu" data-sec="edu" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:16px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.edu }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">08 — ~/edu</div>
+        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.edu }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ git log --oneline</div>
+    </div>
+    <sc-for list="{{ edu }}" as="e" hint-placeholder-count="2">
+      <div style="display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--color-divider);opacity:{{ e.o }};transform:{{ e.t }};transition:opacity .5s ease {{ e.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ e.d }}">
+        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">{{ e.hash }}</span>
+        <div style="flex:1 1 300px;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:24px;text-transform:uppercase">{{ e.school }}</span> <span style="color:var(--color-neutral-700)">— {{ e.what }}</span></div>
+        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">{{ e.when }}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section id="contact" data-sec="contact" style="padding:56px 0;scroll-margin-top:70px">
+    <div style="position:relative;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.contact }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">09 — ~/contact</div>
+      <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.contact }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start;perspective:1400px">
+      <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(28px,3.4vw,40px);line-height:1.1;text-transform:uppercase;margin:0;text-wrap:pretty;opacity:{{ rv.contact.o }};transform:{{ rv.contact.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">Seeking an internship or entry-level role in IT support, systems administration or security operations.</p>
+      <div data-tilt="0.7" class="blueprint" style="padding:22px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="color:var(--color-neutral-700);margin-bottom:12px">khizar@lab:~$ finger khizar</div>
+        <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px;padding:6px 0;opacity:{{ c.o }};transform:{{ c.t }};transition:opacity .4s ease {{ c.d }},transform .5s ease {{ c.d }}">
+            <span style="color:var(--color-accent-700)">{{ c.k }}</span>
+            <sc-if value="{{ c.href }}" hint-placeholder-val="{{ true }}"><a href="{{ c.href }}" target="_blank" style="justify-self:start;overflow-wrap:anywhere">{{ c.v }}</a></sc-if>
+            <sc-if value="{{ c.plain }}" hint-placeholder-val="{{ false }}"><span>{{ c.v }}</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:32px 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-neutral-700)">
+    <span>© 2026 Khizar Ahmed</span><span style="color:var(--color-neutral-500)">echo ZmxhZ3tjdXJpb3VzX2xlYXJuZXJfMjA3N30= | base64 -d</span><span>EOF</span>
+  </footer>
+</main>
+
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--color-accent-900);color:var(--color-accent-100);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;border-top:1px solid var(--color-accent-700)">
+  <div style="max-width:1240px;margin:0 auto;padding:10px clamp(16px,4vw,40px) 12px">
+    <div style="display:flex;flex-direction:column;justify-content:flex-end;gap:2px;margin-bottom:6px;height:{{ outH }};overflow:hidden;transition:height .45s cubic-bezier(.2,.7,.2,1)">
+      <sc-for list="{{ out }}" as="o">
+        <div style="white-space:pre-wrap;color:{{ o.c }}">{{ o.t }}</div>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="color:var(--color-accent-400);white-space:nowrap">khizar@lab:~$</span>
+      <input ref="{{ inputRef }}" value="{{ cmd }}" onChange="{{ onCmd }}" onKeyDown="{{ onKey }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" placeholder="{{ cmdHint }}" spellcheck="false" autocomplete="off" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--color-accent-100);font:inherit;font-size:{{ inputSize }};caret-color:var(--color-accent-300)">
+      <div style="display:{{ quickDisp }};gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        <sc-for list="{{ quick }}" as="q" hint-placeholder-count="3">
+          <button onClick="{{ q.run }}" style="all:unset;cursor:pointer;padding:6px 10px;border:1px solid var(--color-accent-700);color:var(--color-accent-300);font-size:11px" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ q.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;skipBoot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;scanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;typeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.5,&quot;max&quot;:3,&quot;step&quot;:0.25,&quot;tsType&quot;:&quot;number&quot;}}">
+const NAME = 'KHIZAR AHMED';
+const BIO = 'A curious learner driven to understand how systems work down to the lowest level. Information Systems student with eleven certifications including CCNA, CompTIA CySA+, Security+, Network+ and A+, plus four years running a self-hosted Proxmox and pfSense lab.';
+const HERO_CMD = 'cat about.txt';
+const GLYPHS = '#%&*+=<>/\\|01$@';
+const TITLES = { certs: 'Certifications', skills: 'Technical Skills', lab: 'Home Lab', projects: 'Projects', activity: 'Activities', volunteer: 'Volunteering', edu: 'Education', contact: 'Contact' };
+const SEC_IDS = { lab: 'lab', certs: 'certs', projects: 'projects', skills: 'skills', activity: 'activity', hackhcc: 'hackhcc', volunteer: 'volunteer', edu: 'edu', contact: 'contact' };
+const CERTS = [
+  { n: 'Microsoft Endpoint Administrator (MD-102)', f: 'md-102', v: 'Microsoft', g: 'other', d: 202609, ds: 'Sep 2026', note: 'Microsoft Learn — Intune device management.' },
+  { n: 'Cisco CCNA', f: 'ccna', v: 'Cisco', g: 'other', d: 202608, ds: 'Aug 2026', note: 'Credly — network access, IP connectivity and services, security fundamentals.' },
+  { n: 'AWS Certified Cloud Practitioner (CLF-C02)', f: 'aws-clf-c02', v: 'AWS', g: 'other', d: 202606.2, ds: 'Jun 2026', note: 'Credly — cloud concepts, security, and core services.' },
+  { n: 'CompTIA Network+', f: 'network-plus', v: 'CompTIA', g: 'comptia', d: 202606.1, ds: 'Jun 2026', note: '' },
+  { n: 'CompTIA CySA+', f: 'cysa-plus', v: 'CompTIA', g: 'comptia', d: 202605, ds: 'May 2026', note: 'Credly — threat detection, incident response, vulnerability management.' },
+  { n: 'CompTIA A+', f: 'a-plus', v: 'CompTIA', g: 'comptia', d: 202601, ds: 'Jan 2026', note: 'Credly — workstations, mobile devices, operating systems, and software.' },
+  { n: 'Google IT Support', f: 'google-it', v: 'Google', g: 'google', d: 202502, ds: 'Feb 2025', note: '' },
+  { n: 'CompTIA Security+', f: 'security-plus', v: 'CompTIA', g: 'comptia', d: 202312.2, ds: 'Dec 2023', note: 'Credly — threat and vulnerability management, risk mitigation, intrusion detection.' },
+  { n: 'Google Data Analytics', f: 'google-data', v: 'Google', g: 'google', d: 202312.1, ds: 'Dec 2023', note: '' },
+  { n: 'PCEP – Certified Entry-Level Python Programmer', f: 'pcep', v: 'Python Inst.', g: 'other', d: 202308, ds: 'Aug 2023', note: '' },
+  { n: 'Google Cybersecurity', f: 'google-cyber', v: 'Google', g: 'google', d: 202307, ds: 'Jul 2023', note: '' },
+];
+const SKILLS = [
+  ['os.ko', 'Operating Systems', ['Windows', 'Linux (RHEL, Ubuntu, Debian, Fedora)']],
+  ['net.ko', 'Networking', ['Cisco IOS', 'pfSense', 'OpenWRT', 'VPNs', 'VLANs', 'TCP/IP', 'DNS/DHCP', 'routing & switching']],
+  ['hw.ko', 'Hardware & Endpoint Support', ['PC/laptop repair', 'OS imaging', 'device configuration', 'mobile devices', 'troubleshooting']],
+  ['virt.ko', 'Virtualization & Identity', ['Proxmox', 'Docker', 'Active Directory', 'Group Policy']],
+  ['cloud.ko', 'Cloud', ['Amazon Web Services (AWS)', 'Google Cloud Platform (GCP)']],
+  ['script.ko', 'Scripting & Automation', ['PowerShell', 'Bash', 'Python', 'Go', 'Rust']],
+  ['sec.ko', 'Databases & Security Tools', ['SQL', 'SIEM', 'IDS', 'Git/GitHub']],
+  ['pro.ko', 'Professional', ['Team collaboration', 'event planning and organization', 'technical communication and documentation', 'workshop instruction', 'problem solving']],
+];
+const LAB = [
+  'Built and administer a Proxmox virtualization lab running Windows and Debian VMs and containers behind a pfSense firewall.',
+  'Configured multiple Active Directory forests to practice identity, access management, and domain administration.',
+  'Segmented the network with VLANs across pfSense and OpenWRT, set up DNS, DHCP and firewall rules to isolate lab segments, and deployed containerized services using Docker.',
+  'Rebuild and document environments to test configurations and troubleshoot issues.',
+  'Run a NixOS VM on the production switch for self-hosting, with Portainer managing media servers, Tailscale and other containerized services.',
+  'Added a Wazuh SIEM with a Suricata and Zeek NIDS fed from a SPAN port, plus WireGuard and OpenVPN for remote access.',
+  "Built from 0xBEN's Proxmox cybersecurity lab series, where I'm credited for QA testing and feedback.",
+];
+const PROJECTS = [
+  { file: 'tryhackme.md', when: '2022 – Present', title: 'TryHackMe — Hands-On Labs', bullets: ['Completed 300+ practical labs spanning Linux/Windows administration, Active Directory, and system security.', 'Practiced system hardening, troubleshooting, and incident response across simulated enterprise environments.'] },
+  { file: 'ctf.md', when: '2022 – Present', title: 'Capture the Flag (CTF) Competitor', bullets: ['CTFtime, HackTheBox.', 'Solve networking, web, and system security challenges in team competitions, applying hands-on analysis.'] },
+  { file: 'roadmap.md', when: '2024', title: 'Roadmap.sh — Technical Writer', bullets: ['Wrote technical guides covering setup steps, tooling, and best practices for developer and IT audiences.'] },
+];
+const VOL = [
+  { when: '2025 – Present', role: 'Chief Technology Officer', org: 'Computer Science Association, Houston City College', bullets: ['Part of organizing HackHCC (website development, sign up portal, emails), the first ever hackathon for Houston City College.', "Build and maintain the association's website, managing hosting, content updates, and routine upkeep.", 'Plan, organize, coordinate with speakers for workshops.'] },
+  { when: 'January 2026', role: 'IT Refurbishment Volunteer', org: 'Compudopt', bullets: ['Diagnose and repair hardware faults on donated PCs and laptops, replacing components and verifying functionality.', 'Wipe drives, reimage operating systems, and install software to prepare devices for redistribution to under-resourced households.'] },
+];
+const EDU = [
+  { hash: 'a7f3e21', school: 'Houston City College', what: 'Information Systems (in progress)', when: 'August 2025 – Present' },
+  { hash: '0c19b4d', school: 'Kempner High School', what: 'High School Diploma (graduated early)', when: 'May 2025' },
+];
+const CONTACTS = [
+  { k: 'location', v: 'Sugar Land, TX' },
+  { k: 'email', v: 'website@khiz3r.me', href: 'mailto:website@khiz3r.me' },
+  { k: 'linkedin', v: 'linkedin.com/in/khizar-ahmed9', href: 'https://linkedin.com/in/khizar-ahmed9' },
+  { k: 'github', v: 'github.com/khizarahmed9', href: 'https://github.com/khizarahmed9' },
+];
+const SYSINFO = [
+  ['user', 'khizar ahmed'], ['host', 'sugar-land.tx'], ['role', 'Information Systems student · HCC'], ['certs', '11 · CCNA, CySA+, Sec+, Net+, A+'],
+  ['lab', 'Proxmox + pfSense · 4 yrs'], ['thm', '300+ labs'], ['ncl', '30th individual · 23rd team (national)'], ['seeking', 'IT support · sysadmin · SecOps'],
+];
+const BOOT = [
+  ['', 'KA-BIOS (C) 2026 — portfolio firmware'],
+  ['', 'CPU0: curious learner @ lowest-level'],
+  ['', 'Memory test ........................ OK'],
+  ['', 'Probing interfaces ...... eth0 vlan10 vlan20 vlan30'],
+  ['', 'Loading certification modules:'],
+  ...CERTS.slice().reverse().map(c => ['[ OK ]', c.f + '.ko']),
+  ['[ OK ]', 'Mounted /home/khizar'],
+  ['[ OK ]', 'Started portfolio.service'],
+  ['', '1 flag hidden on this page. good luck.'],
+  ['', 'Welcome. Type `help` at any time.'],
+];
+const RAIN = '01<>/\\{}#$%&*+=KAHCC';
+const HACK = 'HACKHCC';
+const CLONE = 'git clone https://github.com/khizarahmed9/hackrice-finance-thingy.git';
+const HACKLOG = [
+  ['$', './launch hackhcc --first-ever'],
+  ['', 'org: Computer Science Association, Houston City College'],
+  ['[ OK ]', 'website development'],
+  ['[ OK ]', 'sign up portal'],
+  ['[ OK ]', 'emails'],
+  ['[ OK ]', 'workshops · speakers coordinated'],
+  ['', 'status: first ever hackathon for Houston City College'],
+];
+const HACKMODS = [['mod/01', 'Website development'], ['mod/02', 'Sign up portal'], ['mod/03', 'Emails']];
+const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'));
+const B64 = 'ZmxhZ3tjdXJpb3VzX2xlYXJuZXJfMjA3N30=';
+const FLAG = 'flag{curious_learner_2077}';
+const LABNODES = {
+  wan: ['home.router', 'Home router on the WAN side. The Proxmox host is wired to it and given a static DHCP reservation.'],
+  br0: ['vmbr0', 'Open vSwitch bridge on the physical NIC. A SPAN port mirrors every frame to the NIDS sniff port.'],
+  siem: ['wazuh.siem', 'Wazuh SIEM (indexer, manager, dashboards) with a Suricata + Zeek NIDS node and Wazuh agents on endpoints.'],
+  nix: ['nixos.selfhost', 'NixOS VM on the production switch (vmbr0) for self-hosting. Portainer manages the Docker stacks: media servers, Tailscale and other services.'],
+  vpn: ['wireguard.ct', 'WireGuard and OpenVPN containers with dynamic DNS for remote access to the lab.'],
+  pf: ['pfsense.fw', 'pfSense VM between vmbr0 and vmbr1. VLANs are sub-interfaces on vtnet1; firewall rules decide what routes between subnets.'],
+  br1: ['vmbr1', 'Internal Open vSwitch bridge with no physical uplink. VLAN tags are trunked up to pfSense through Proxmox SDN.'],
+  nat: ['kali.native', 'Untagged 10.0.0.0/24 network for the Kali Linux attack box.'],
+  v80: ['vlan80.ad', 'Active Directory lab: domain controller and Windows clients, made vulnerable on purpose to practice attacks, then rolled back.'],
+  v666: ['vlan666.untrusted', 'Untrusted targets that still need internet access, such as the OWASP Juice Shop container.'],
+  v999: ['vlan999.isolated', 'Isolated targets reachable only from Kali: Vulnhub and HackMyVM boxes.'],
+};
+const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · grep <term> · flag · boot · clear · keys 0–9 jump';
+
+class Component extends DCLogic {
+  state = { bootN: 0, phase: 'run', nameP: 0, heroN: 0, bioN: 0, seen: {}, typed: {}, filter: 'all', cmd: '', out: [{ t: 'portfolio shell ready — ' + HELP, c: 'var(--color-accent-300)' }], now: new Date(), t0: Date.now(), scroll: 0, moonT: 0, focused: false, labSel: 'pf', active: 'top', xl: false, navScr: null, wide: typeof innerWidth === 'undefined' ? true : innerWidth >= 760, nclP: 0, hackP: 0, hackN: 0 };
+  hist = []; hi = 0;
+  burst(x, y, n = 12, dist = 70) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement('span');
+      el.textContent = GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      el.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;z-index:97;pointer-events:none;font:12px JetBrains Mono,monospace;color:var(--color-accent);text-shadow:0 0 8px var(--color-accent)';
+      document.body.appendChild(el);
+      const a = Math.random() * Math.PI * 2, d = dist * (.4 + Math.random());
+      el.animate([{ transform: 'translate(-50%,-50%) scale(1.2)', opacity: 1 }, { transform: 'translate(calc(-50% + ' + Math.cos(a) * d + 'px),calc(-50% + ' + Math.sin(a) * d + 'px)) scale(.5)', opacity: 0 }], { duration: 500 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => el.remove();
+    }
+    const ring = document.createElement('span');
+    ring.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;width:10px;height:10px;border:1px solid var(--color-accent);z-index:97;pointer-events:none';
+    document.body.appendChild(ring);
+    ring.animate([{ transform: 'translate(-50%,-50%) scale(1) rotate(0)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(' + (dist / 6) + ') rotate(90deg)', opacity: 0 }], { duration: 650, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => ring.remove();
+  }
+  grep(term) {
+    const q = term.toLowerCase(), hits = [];
+    const corpus = [
+      ['about', BIO], ['certs', CERTS.map(c => c.n + ' ' + c.note).join(' ')], ['skills', SKILLS.map(s => s[1] + ' ' + s[2].join(' ')).join(' ')],
+      ['lab', LAB.join(' ')], ['projects', 'HackRice 2026 hackathon weekend. NASA pre-apprenticeship Houston City College moon base lunar network team lead hardware temperature cybersecurity Wi-Fi locate instruments. Wayne Finance Actual Budget fork which adds AI and auto receipt ingestion and a PWA mobile app and simplifies usage'],
+      ['activity', 'National Cyber League ' + PROJECTS.map(p => p.title + ' ' + p.bullets.join(' ')).join(' ')], ['hackhcc', HACKLOG.map(l => l[1]).join(' ')],
+      ['volunteer', VOL.map(v => v.role + ' ' + v.org + ' ' + v.bullets.join(' ')).join(' ')], ['edu', EDU.map(e => e.school + ' ' + e.what).join(' ')],
+    ];
+    corpus.forEach(([k, t]) => { const n = t.toLowerCase().split(q).length - 1; if (n) hits.push('~/' + k + (n > 1 ? '(' + n + ')' : '')); });
+    this.print([{ t: '$ grep -ril "' + term + '" ~', c: 'var(--color-accent-400)' }, { t: hits.length ? hits.join('  ') + '  — ' + hits.length + ' file' + (hits.length > 1 ? 's' : '') : 'no matches', c: 'var(--color-accent-100)' }]);
+  }
+  inputRef = React.createRef(); mainRef = React.createRef(); headerRef = React.createRef(); marqRef = React.createRef(); heroRef = React.createRef(); ringRef = React.createRef();
+  startMotion() {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(pointer: fine)').matches;
+    let lastY = scrollY, vel = 0, skew = 0, frame = 0, hidden = false;
+    const mouse = { x: -200, y: -200 }, cur = { x: -200, y: -200 }, spot = { x: 0, y: 0 }, spotC = { x: 0, y: 0 };
+    const tilts = new Map(), mags = new Map();
+    const lerp = (a, b, t) => a + (b - a) * t;
+    this.onMotionMove = e => {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+      const h = this.heroRef.current; if (h) { const r = h.getBoundingClientRect(); spot.x = e.clientX - r.left; spot.y = e.clientY - r.top; }
+      const t = e.target.closest && e.target.closest('[data-tilt]');
+      tilts.forEach((v, el) => { if (el !== t) { v.tx = 0; v.ty = 0; } });
+      if (t && !reduced) {
+        const r = t.getBoundingClientRect(), k = parseFloat(t.dataset.tilt) || 1;
+        const v = tilts.get(t) || { x: 0, y: 0 }; v.tx = ((e.clientX - r.left) / r.width - .5) * k; v.ty = ((e.clientY - r.top) / r.height - .5) * k; tilts.set(t, v);
+      }
+      document.querySelectorAll('.btn').forEach(b => {
+        const r = b.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), d = Math.hypot(dx, dy);
+        const v = mags.get(b) || { x: 0, y: 0 }; const on = d < Math.max(r.width, r.height) * .9 && !reduced;
+        v.tx = on ? dx * .28 : 0; v.ty = on ? dy * .35 : 0; mags.set(b, v);
+      });
+      const ring = this.ringRef.current;
+      if (ring) { const hot = e.target.closest && e.target.closest('a,button,input,[data-tilt]'); ring.style.transform = hot ? 'scale(2.6) rotate(45deg)' : 'none'; ring.style.background = hot ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)' : 'transparent'; }
+    };
+    addEventListener('mousemove', this.onMotionMove, { passive: true });
+    const ids = ['top', ...Object.values(SEC_IDS)];
+    const loop = () => {
+      this.motionRaf = requestAnimationFrame(loop); frame++;
+      const y = scrollY, dv = y - lastY; lastY = y; vel = lerp(vel, dv, .14);
+      const main = this.mainRef.current;
+      if (main && !reduced) { skew = lerp(skew, Math.max(-3, Math.min(3, vel * .06)), .12); main.style.transform = Math.abs(skew) < .005 ? '' : 'skewY(' + skew.toFixed(3) + 'deg)'; }
+      const hd = this.headerRef.current;
+      if (hd) { const hide = y > 240 && vel > 1.5 ? true : (vel < -1.5 || y < 240 ? false : hidden); if (hide !== hidden) { hidden = hide; hd.style.transform = hide ? 'translateY(-100%)' : ''; } }
+      const mq = this.marqRef.current; if (mq && mq.getAnimations) { const a = mq.getAnimations()[0]; if (a) { const sp = 1 + Math.min(10, Math.abs(vel) * .35); a.playbackRate = vel < -0.5 ? -sp : sp; } }
+      if (!reduced) document.querySelectorAll('[data-par]').forEach(el => { const r = el.getBoundingClientRect(); el.style.translate = '0 ' + ((r.top + r.height / 2 - innerHeight / 2) * parseFloat(el.dataset.par)).toFixed(1) + 'px'; });
+      tilts.forEach((v, el) => { v.x = lerp(v.x, v.tx, .12); v.y = lerp(v.y, v.ty, .12); const m = Math.hypot(v.x, v.y); if (m < .001 && !v.tx && !v.ty) { el.style.rotate = ''; tilts.delete(el); return; } el.style.rotate = (-v.y).toFixed(4) + ' ' + v.x.toFixed(4) + ' 0 ' + (m * 14).toFixed(2) + 'deg'; });
+      mags.forEach((v, b) => { v.x = lerp(v.x, v.tx, .18); v.y = lerp(v.y, v.ty, .18); b.style.translate = Math.abs(v.x) + Math.abs(v.y) < .05 ? '' : v.x.toFixed(2) + 'px ' + v.y.toFixed(2) + 'px'; });
+      if (fine) { cur.x = lerp(cur.x, mouse.x, .24); cur.y = lerp(cur.y, mouse.y, .24); const c = this.crossRef.current; if (c) c.style.transform = 'translate(' + cur.x.toFixed(1) + 'px,' + cur.y.toFixed(1) + 'px)'; }
+      const h = this.heroRef.current; if (h) { spotC.x = lerp(spotC.x, spot.x, .08); spotC.y = lerp(spotC.y, spot.y, .08); h.style.setProperty('--mx', spotC.x.toFixed(0) + 'px'); h.style.setProperty('--my', spotC.y.toFixed(0) + 'px'); }
+      if (frame % 8 === 0) { let act = 'top'; for (const id of ids) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < innerHeight * .45) act = id; } if (act !== this.state.active) this.setState({ active: act }); }
+    };
+    this.motionRaf = requestAnimationFrame(loop);
+  } rainRef = React.createRef(); crossRef = React.createRef(); crossLbl = React.createRef();
+  startRain() {
+    const cv = this.rainRef.current; if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const acc = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#3ddc68';
+    let W = 0, H = 0, cols = [];
+    const fit = () => { const r = cv.getBoundingClientRect(); W = cv.width = r.width; H = cv.height = r.height; cols = Array.from({ length: Math.ceil(W / 18) }, () => -Math.random() * H / 16 | 0); };
+    fit(); this.onResize = fit; addEventListener('resize', fit);
+    let last = 0;
+    const draw = t => {
+      this.rainRaf = requestAnimationFrame(draw);
+      if (t - last < 60 || scrollY > H) return; last = t;
+      ctx.fillStyle = 'rgba(7,10,7,.16)'; ctx.fillRect(0, 0, W, H);
+      ctx.font = "13px 'JetBrains Mono', monospace";
+      cols.forEach((y, i) => {
+        ctx.fillStyle = Math.random() < .05 ? '#e4ffe8' : acc;
+        ctx.fillText(RAIN[(Math.random() * RAIN.length) | 0], i * 18, y * 16);
+        cols[i] = (y * 16 > H && Math.random() > .97) ? 0 : y + 1;
+      });
+    };
+    this.rainRaf = requestAnimationFrame(draw);
+  }
+  startCross() {
+    if (!matchMedia('(pointer: fine)').matches) return;
+    const p4 = n => String(Math.round(n)).padStart(4, '0');
+    this.onMove = e => {
+      const el = this.crossRef.current; if (!el) return;
+      el.style.opacity = 1;
+      if (this.crossLbl.current) this.crossLbl.current.textContent = 'x:' + p4(e.clientX) + ' y:' + p4(e.clientY + scrollY);
+    };
+    this.onLeave = () => { if (this.crossRef.current) this.crossRef.current.style.opacity = 0; };
+    addEventListener('mousemove', this.onMove); document.addEventListener('mouseleave', this.onLeave);
+  }
+
+  componentDidMount() {
+    if (this.props.skipBoot) this.setState({ phase: 'gone', seen: { hero: true } });
+    else this.startBoot();
+    this.tickI = setInterval(() => this.tick(), 28);
+    this.startRain(); this.startCross(); this.startMotion();
+    this.moonI = setInterval(() => { if (this.state.seen.projects) this.setState(s => ({ moonT: s.moonT + 1 })); }, 90);
+    this.onClickBurst = e => { if (e.target.closest && e.target.closest('input')) return; this.burst(e.clientX, e.clientY); };
+    addEventListener('click', this.onClickBurst);
+    this.onWide = () => { const w = innerWidth >= 760, xl = innerWidth >= 1100; if (w !== this.state.wide || xl !== this.state.xl) this.setState({ wide: w, xl }); };
+    addEventListener('resize', this.onWide); this.onWide();
+    this.clockI = setInterval(() => this.setState({ now: new Date() }), 1000);
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => {
+        this.raf = null;
+        const h = document.documentElement.scrollHeight - innerHeight;
+        this.setState({ scroll: h > 0 ? Math.min(1, scrollY / h) : 0 });
+      });
+    };
+    addEventListener('scroll', this.onScroll, { passive: true });
+    this.onDocKey = e => {
+      if (this.state.phase === 'run') { this.finishBoot(); return; }
+      if (/^[0-9]$/.test(e.key) && document.activeElement !== this.inputRef.current) { const ids = ['top', ...Object.values(SEC_IDS)]; if (ids[+e.key]) this.go(ids[+e.key]); return; }
+      if (e.key === '/' && document.activeElement !== this.inputRef.current) { e.preventDefault(); this.inputRef.current && this.inputRef.current.focus(); }
+    };
+    addEventListener('keydown', this.onDocKey);
+    this.io = new IntersectionObserver(es => {
+      const add = {};
+      es.forEach(en => { if (en.isIntersecting) add[en.target.dataset.sec] = true; });
+      if (Object.keys(add).length) this.setState(s => ({ seen: { ...s.seen, ...add, hero: s.seen.hero } }));
+    }, { threshold: 0.12 });
+    setTimeout(() => document.querySelectorAll('[data-sec]').forEach(el => { if (el.dataset.sec !== 'hero') this.io.observe(el); }), 50);
+  }
+  componentWillUnmount() {
+    clearInterval(this.tickI); clearInterval(this.clockI); clearInterval(this.bootI);
+    removeEventListener('scroll', this.onScroll); removeEventListener('keydown', this.onDocKey);
+    this.io && this.io.disconnect();
+    cancelAnimationFrame(this.rainRaf); removeEventListener('resize', this.onWide); cancelAnimationFrame(this.motionRaf); removeEventListener('click', this.onClickBurst); clearInterval(this.moonI); removeEventListener('mousemove', this.onMotionMove); removeEventListener('resize', this.onResize);
+    removeEventListener('mousemove', this.onMove); document.removeEventListener('mouseleave', this.onLeave);
+  }
+  speed() { return Math.max(0.25, this.props.typeSpeed ?? 1); }
+  startBoot() {
+    clearInterval(this.bootI);
+    this.setState({ phase: 'run', bootN: 0 });
+    this.bootI = setInterval(() => {
+      if (this.state.bootN >= BOOT.length) { clearInterval(this.bootI); setTimeout(() => this.finishBoot(), 450); return; }
+      this.setState(s => ({ bootN: s.bootN + 1 }));
+    }, 75 / this.speed());
+  }
+  finishBoot() {
+    if (this.state.phase !== 'run') return;
+    clearInterval(this.bootI);
+    this.setState({ phase: 'out', bootN: BOOT.length, nameP: 0, heroN: 0, bioN: 0, seen: { ...this.state.seen, hero: true } });
+    setTimeout(() => this.setState({ phase: 'gone' }), 850);
+  }
+  tick() {
+    const s = this.state; if (s.phase === 'run') return;
+    const sp = this.speed(), ch = {};
+    if (s.nameP < NAME.length) ch.nameP = Math.min(NAME.length, s.nameP + 0.3 * sp);
+    else if (s.heroN < HERO_CMD.length) ch.heroN = s.heroN + 1;
+    else if (s.bioN < BIO.length) ch.bioN = Math.min(BIO.length, s.bioN + Math.ceil(3 * sp));
+    if (s.seen.activity && s.nclP < 1) ch.nclP = Math.min(1, s.nclP + 0.02 * sp);
+    if (s.seen.hackhcc) {
+      if (s.hackP < HACK.length) ch.hackP = Math.min(HACK.length, s.hackP + 0.16 * sp);
+      this.hk = (this.hk || 0) + 1;
+      if (s.hackN < HACKLOG.length && this.hk % Math.max(3, Math.round(14 / sp)) === 0) ch.hackN = s.hackN + 1;
+    }
+    if (s.navScr && s.navScr.p < s.navScr.len) ch.navScr = { ...s.navScr, p: s.navScr.p + 0.6 };
+    let tch = null;
+    for (const k in TITLES) {
+      const cur = s.typed[k] || 0;
+      if (s.seen[k] && cur < TITLES[k].length) { tch = tch || { ...s.typed }; tch[k] = Math.min(TITLES[k].length, cur + (sp >= 1.5 ? 2 : 1)); }
+    }
+    if (tch) ch.typed = tch;
+    if (s.seen.projects && (s.cloneN || 0) < CLONE.length) ch.cloneN = (s.cloneN || 0) + 1;
+    if (Object.keys(ch).length) this.setState(ch);
+  }
+  go(id) {
+    const el = document.getElementById(id); if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: 'smooth' });
+  }
+  print(lines) { this.setState(s => ({ out: [...s.out, ...lines].slice(-14) })); }
+  run(raw) {
+    const c = raw.trim().toLowerCase().replace(/^(cd|ls|cat)\s+(~\/)?/, '');
+    const echo = { t: '$ ' + raw, c: 'var(--color-accent-400)' };
+    const res = t => ({ t, c: 'var(--color-accent-100)' });
+    if (!c) return;
+    this.hist.push(raw); this.hi = this.hist.length;
+    if (c.startsWith('grep ')) { this.setState({ cmd: '' }); this.grep(raw.trim().slice(5).replace(/^-\w+\s+/, '').replace(/"/g, '')); return; }
+    const dm = c.match(/^(?:echo\s+(\S+)\s*\|\s*)?base64\s+-d\s*(\S*)$|^decode\s+(\S+)$/);
+    if (dm) { let o; try { o = atob(raw.trim().match(/[A-Za-z0-9+\/=]{12,}/)[0]); } catch (err) { o = 'base64: invalid input'; } this.setState({ cmd: '' }); this.print([echo, res(o)]); return; }
+    const fm = c.match(/^(?:submit\s+)?(flag\{.*\})$/);
+    if (fm) {
+      this.setState({ cmd: '' });
+      if (fm[1] === FLAG) { this.burst(innerWidth / 2, innerHeight / 2, 90, 420); this.print([echo, { t: '[ OK ] flag accepted. nice work — now go say hi: website@khiz3r.me', c: 'var(--color-accent)' }]); }
+      else this.print([echo, res('[FAIL] incorrect flag')]);
+      return;
+    }
+    if (c === 'flag' || c === 'flag.txt') { this.setState({ cmd: '' }); this.print([echo, res('a flag is hidden on this page. decode what you find, then submit it.')]); return; }
+    if (c === 'clear') { this.setState({ out: [], cmd: '' }); return; }
+    let r;
+    if (c === 'help') r = HELP;
+    else if (c === 'whoami') r = 'khizar ahmed — Information Systems student, Sugar Land, TX';
+    else if (SEC_IDS[c] || c === 'home' || c === '~') { const id = SEC_IDS[c] || 'top'; this.go(id); r = 'cd ~/' + (SEC_IDS[c] || ''); }
+    else if (c === 'resume') { window.open('uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf', '_blank'); r = 'opening resume.pdf'; }
+    else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
+    else if (c === 'boot' || c === 'reboot') { scrollTo(0, 0); this.setState({ typed: {}, seen: {}, nclP: 0, hackP: 0, hackN: 0, cloneN: 0 }); this.startBoot(); r = 'rebooting…'; }
+    else if (c.startsWith('sudo')) r = 'khizar is not in the sudoers file. This incident will be reported.';
+    else r = 'command not found: ' + c + " — try 'help'";
+    this.setState({ cmd: '' });
+    this.print([echo, res(r)]);
+  }
+  renderVals() {
+    const s = this.state, seen = s.seen;
+    const rvi = (k, i, step = 70) => seen[k] ? { o: 1, t: 'none', d: (i * step) + 'ms' } : { o: 0, t: 'translateY(18px)', d: '0ms' };
+    const p = Math.floor(s.nameP);
+    let name = '';
+    for (let i = 0; i < NAME.length; i++) name += (i < p || NAME[i] === ' ') ? NAME[i] : (s.phase === 'run' ? '\u00a0' : GLYPHS[(Math.random() * GLYPHS.length) | 0]);
+    const [n1, n2] = name.split(' ');
+    const head = {}; for (const k in TITLES) head[k] = TITLES[k].slice(0, s.typed[k] || 0);
+    const rv = {}; ['hero', 'lab', 'activity', 'contact', 'hackhcc', 'projects'].forEach(k => rv[k] = rvi(k, 0));
+    const up = Math.floor((Date.now() - s.t0) / 1000), pad = n => String(n).padStart(2, '0');
+    const filled = Math.round(s.scroll * 16);
+    const certs = CERTS.filter(c => s.filter === 'all' || c.g === s.filter);
+    const flt = [['all', 'ALL'], ['comptia', 'COMPTIA'], ['google', 'GOOGLE'], ['other', 'CISCO · MS · AWS · PY']];
+    const mk = cmd => () => this.run(cmd);
+    return {
+      bootVisible: s.phase !== 'gone',
+      bootY: s.phase === 'out' ? 'translateY(-100%)' : 'translateY(0)',
+      bootLines: BOOT.slice(0, s.bootN).map(([tag, text]) => ({ tag, text })),
+      skipBoot: () => this.finishBoot(),
+      scanlines: this.props.scanlines ?? true,
+      name1: n1, name2: n2,
+      heroCmd: HERO_CMD.slice(0, s.heroN),
+      bio: BIO.slice(0, s.bioN),
+      uptime: pad(Math.floor(up / 3600)) + ':' + pad(Math.floor(up / 60) % 60) + ':' + pad(up % 60),
+      clock: s.now.toLocaleTimeString('en-US', { hour12: false }),
+      scrollBar: '[' + '#'.repeat(filled) + '.'.repeat(16 - filled) + '] ' + String(Math.round(s.scroll * 100)).padStart(3, ' ') + '%',
+      navItems: Object.keys(SEC_IDS).map(k => { const L = '~/' + k; let label = L; if (s.navScr && s.navScr.k === k && s.navScr.p < L.length) { label = ''; for (let i = 0; i < L.length; i++) label += i < s.navScr.p ? L[i] : GLYPHS[(Math.random() * GLYPHS.length) | 0]; } return { label, go: () => this.go(SEC_IDS[k]), hov: () => this.setState({ navScr: { k, p: 2, len: L.length } }) }; }),
+      rail: ['top', ...Object.keys(SEC_IDS)].map((k, i) => { const id = k === 'top' ? 'top' : SEC_IDS[k], on = s.active === id; return { label: k === 'top' ? 'home' : '~/' + k, num: String(i).padStart(2, '0'), go: () => this.go(id), fg: on ? 'var(--color-accent)' : 'var(--color-neutral-600)', lo: on ? 1 : 0, w: on ? '36px' : '14px', bg: on ? 'var(--color-accent)' : 'var(--color-neutral-500)' }; }),
+      xl: s.xl,
+      bars: Object.fromEntries(Object.keys(SEC_IDS).map(k => [k, seen[k] ? 'scaleX(1)' : 'scaleX(0)'])),
+      mainRef: this.mainRef, headerRef: this.headerRef, marqRef: this.marqRef, heroRef: this.heroRef, ringRef: this.ringRef,
+      goTop: () => this.go('top'), goContact: () => this.go('contact'),
+      rv, head,
+      sysinfo: SYSINFO.map(([k, v], i) => ({ k, v, ...rvi('hero', i + 4, 90) })),
+      certBlocks: CERTS.map((_, i) => ({ o: seen.hero ? 1 : 0.12, d: (800 + i * 90) + 'ms' })),
+      filters: flt.map(([k, label]) => ({ label, pick: () => this.setState({ filter: k }), bg: s.filter === k ? 'var(--color-accent)' : 'transparent', fg: s.filter === k ? 'var(--color-bg)' : 'var(--color-text)' })),
+      filterFlag: s.filter === 'all' ? '' : '--vendor=' + s.filter,
+      certCount: certs.length,
+      certRows: certs.map((c, i) => ({ ...c, ...rvi('certs', i, 55) })),
+      skills: SKILLS.map(([id, k, items], i) => ({ id, k, items: items.map(t => ({ t, grep: () => this.grep(t.replace(/\s*\(.*\)/, '')) })), ...rvi('skills', i, 80) })),
+      labItems: LAB.map((t2, i) => ({ n: '0' + (i + 1), t2, ...rvi('lab', i + 2, 120) })),
+      nclStats: [[1, 'HCC · individual & team'], [30, 'national · individual'], [23, 'national · team']].map(([n, label]) => { const e = 1 - Math.pow(1 - s.nclP, 3); return { val: ord(Math.max(1, Math.round(n * e))), label }; }),
+      glitch: () => { if (s.nameP >= NAME.length && s.bioN >= BIO.length) this.setState({ nameP: 0 }); },
+      rainRef: this.rainRef, crossRef: this.crossRef, crossLbl: this.crossLbl,
+      marquee: [...CERTS.map(c => c.n), 'NCL · 30th national', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs'].concat([...CERTS.map(c => c.n), 'NCL · 30th national', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs']),
+      hackWord: (() => { const hp = Math.floor(s.hackP); let w = ''; for (let i = 0; i < HACK.length; i++) w += i < hp ? HACK[i] : (seen.hackhcc ? GLYPHS[(Math.random() * GLYPHS.length) | 0] : '_'); return w; })(),
+      feats: [['feat/01', 'AI'], ['feat/02', 'Auto receipt ingestion'], ['feat/03', 'PWA mobile app'], ['feat/04', 'Simplified usage']].map(([id, name], i) => ({ id, name, ...rvi('projects', i + 2, 110) })),
+      cloneLine: CLONE.slice(0, s.cloneN || 0),
+      pipeline: ['receipt image', 'AI extraction', 'transaction', 'Actual Budget'].map((name, i) => ({ name, n: '0' + (i + 1), d: i + 's' })),
+      nasaMods: [['sys/01', 'Passive-cooled hardware'], ['sys/02', 'Network types'], ['sys/03', 'Cybersecurity by design'], ['sys/04', 'Wi-Fi locating']].map(([id, name], i) => ({ id, name, ...rvi('projects', i + 5, 110) })),
+      ripples: [0, 1.2, 2.4].map(d => ({ d: d + 's' })),
+      ...(() => {
+        const t = s.moonT, ph = (t % 40) / 40, inst = [['rover', '18%', '24%', .12], ['seismo', '72%', '20%', .3], ['hab-02', '80%', '70%', .55], ['drill', '14%', '76%', .75], ['antenna', '44%', '84%', .9]];
+        const found = inst.filter(([, , , p]) => ph >= p).length;
+        const temp = Math.round(-23 + 150 * Math.sin(t / 60));
+        return {
+          instruments: inst.map(([label, x, y, p]) => ({ label, x, y, bg: ph >= p ? 'var(--color-accent)' : 'transparent' })),
+          locFound: found + '/' + inst.length + ' located',
+          moonTemp: (temp > 0 ? '+' : temp < 0 ? '−' : '') + Math.abs(temp) + '°C',
+          moonPct: ((temp + 173) / 300 * 100).toFixed(1) + '%',
+        };
+      })(),
+      hackLog: HACKLOG.slice(0, s.hackN).map(([tag, text]) => ({ tag, text })),
+      hackMods: HACKMODS.map(([id, name], i) => ({ id, name, status: seen.hackhcc ? 'DEPLOYED' : 'PENDING', w: seen.hackhcc ? '100%' : '0%', d2: (400 + i * 300) + 'ms', ...rvi('hackhcc', i + 1, 140) })),
+      projects: PROJECTS.map((p, i) => ({ ...p, ...rvi('activity', i + 2, 110) })),
+      vol: VOL.map((v, i) => ({ ...v, ...rvi('volunteer', i, 140) })),
+      edu: EDU.map((e, i) => ({ ...e, ...rvi('edu', i, 140) })),
+      contacts: CONTACTS.map((c, i) => ({ ...c, plain: !c.href, ...rvi('contact', i + 1, 110) })),
+      out: s.out,
+      wide: s.wide,
+      certMin: s.wide ? '720px' : '0',
+      certCols: s.wide ? '96px 110px 90px minmax(0,1.2fr) minmax(0,1.4fr)' : 'auto minmax(0,1fr)',
+      permDisp: s.wide ? 'inline' : 'none',
+      spanCol: s.wide ? 'auto' : '1 / -1',
+      cmdHint: s.wide ? 'help · / focus · ↑↓ history · tab completes · 0–9 jump' : 'type help',
+      inputSize: s.wide ? '13px' : '16px',
+      quickDisp: s.wide ? 'flex' : 'none',
+      cmd: s.cmd, inputRef: this.inputRef,
+      onCmd: e => this.setState({ cmd: e.target.value }),
+      onKey: e => {
+        if (e.key === 'Enter') this.run(s.cmd);
+        else if (e.key === 'ArrowUp') { e.preventDefault(); if (this.hist.length) { this.hi = Math.max(0, this.hi - 1); this.setState({ cmd: this.hist[this.hi] }); } }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); this.hi = Math.min(this.hist.length, this.hi + 1); this.setState({ cmd: this.hist[this.hi] || '' }); }
+        else if (e.key === 'Tab') {
+          e.preventDefault();
+          const all = ['help', 'whoami', 'resume', 'boot', 'clear', 'flag', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
+          const m = all.filter(x => x.startsWith(s.cmd.toLowerCase()));
+          if (m.length === 1) this.setState({ cmd: m[0] }); else if (m.length) this.print([{ t: m.join('  '), c: 'var(--color-neutral-700)' }]);
+        }
+        else if (e.key === 'Escape') this.inputRef.current && this.inputRef.current.blur();
+      },
+      onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
+      outH: s.focused ? '232px' : '62px',
+      lab: Object.fromEntries(Object.keys(LABNODES).map(k => [k, { f: s.labSel === k ? 'var(--color-accent-800)' : 'transparent', s: s.labSel === k ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }) }])),
+      labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
+      quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'sudo', run: mk('sudo hire khizar') }],
+    };
+  }
+}
+</script>
+</body>
+</html>
