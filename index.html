@@ -500,7 +500,7 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;skipBoot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;scanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;typeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.5,&quot;max&quot;:3,&quot;step&quot;:0.25,&quot;tsType&quot;:&quot;number&quot;}}">
 const NAME = 'KHIZAR AHMED';
-const BIO = 'A curious learner driven to understand how systems work down to the lowest level. Information Systems student with eleven certifications including CCNA, CompTIA CySA+, Security+, Network+ and A+, plus four years running a self-hosted Proxmox and pfSense lab.';
+const BIO = 'A curious learner driven to understand how systems work down to the lowest level. 17-year-old Information Systems student with eleven certifications including CCNA, CompTIA CySA+, Security+, Network+ and A+, plus four years running a self-hosted Proxmox and pfSense lab.';
 const HERO_CMD = 'cat about.txt';
 const GLYPHS = '#%&*+=<>/\\|01$@';
 const TITLES = { certs: 'Certifications', skills: 'Technical Skills', lab: 'Home Lab', projects: 'Projects', activity: 'Activities', volunteer: 'Volunteering', edu: 'Education', contact: 'Contact' };
@@ -811,7 +811,7 @@ class Component extends DCLogic {
     if (c === 'clear') { this.setState({ out: [], cmd: '' }); return; }
     let r;
     if (c === 'help') r = HELP;
-    else if (c === 'whoami') r = 'khizar ahmed — Information Systems student, Sugar Land, TX';
+    else if (c === 'whoami') r = 'khizar ahmed, 17 — Information Systems student, Sugar Land, TX';
     else if (SEC_IDS[c] || c === 'home' || c === '~') { const id = SEC_IDS[c] || 'top'; this.go(id); r = 'cd ~/' + (SEC_IDS[c] || ''); }
     else if (c === 'resume') { window.open('uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf', '_blank'); r = 'opening resume.pdf'; }
     else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
