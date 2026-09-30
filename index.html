@@ -109,7 +109,7 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
     <div data-tilt="0.7" class="blueprint" style="padding:22px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;opacity:{{ rv.hero.o }};transform:{{ rv.hero.t }};transition:opacity .7s ease .4s,transform .8s cubic-bezier(.2,.7,.2,1) .4s">
       <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
       <div style="display:flex;justify-content:space-between;color:var(--color-neutral-700);border-bottom:1px solid var(--color-divider);padding-bottom:10px;margin-bottom:12px"><span>$ sysinfo</span><span>FIG. 01</span></div>
-      <sc-for list="{{ sysinfo }}" as="s" hint-placeholder-count="8">
+      <sc-for list="{{ sysinfo }}" as="s" hint-placeholder-count="9">
         <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;padding:5px 0;opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .4s ease {{ s.d }},transform .5s ease {{ s.d }}">
           <span style="color:var(--color-accent-700)">{{ s.k }}</span><span>{{ s.v }}</span>
         </div>
