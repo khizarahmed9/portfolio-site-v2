@@ -56,4 +56,4 @@ npx wrangler deploy
 
 ## License
 
-[MIT](LICENSE). The code is free to reuse. The resume content, personal details and photos are mine, so please don't present them as yours.
+[MIT](LICENSE). The code is free to reuse. The resume content and personal details are mine, so please don't present them as yours.
