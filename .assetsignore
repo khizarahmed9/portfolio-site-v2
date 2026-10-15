@@ -1,9 +1,13 @@
+.git
+.thumbnail
+.assetsignore
+wrangler.jsonc
+_ds/*/readme.md
+_ds/*/_ds_manifest.json
+_ds/*/_adherence.oxlintrc.json
+.gitignore
 PRODUCT.md
 DESIGN.md
 CLAUDE.md
 .impeccable
 .claude
-.git
-.gitignore
-.assetsignore
-wrangler.jsonc
