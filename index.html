@@ -30,6 +30,28 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes pkt{0%{transform:translate(var(--x1),var(--y1));opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translate(var(--x2),var(--y2));opacity:0}}
 @keyframes sweep{0%{transform:translateY(-10vh)}100%{transform:translateY(110vh)}}
+::selection{background:var(--color-accent);color:var(--color-accent-900)}
+html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
+:focus-visible{outline:1px solid var(--color-accent);outline-offset:3px}
+/* man-page section grid: margin column (number, path, command) + body */
+.sec{position:relative;display:grid;grid-template-columns:minmax(170px,220px) minmax(0,1fr);gap:0 clamp(28px,4vw,56px);border-top:1px solid var(--color-divider);scroll-margin-top:64px}
+.sec>.sweep{position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--color-accent);transform-origin:0 50%;transition:transform 1.3s cubic-bezier(.7,0,.2,1)}
+.gut{position:sticky;top:76px;align-self:start;display:flex;flex-direction:column;gap:6px;padding-top:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:1.5;color:var(--color-neutral-700)}
+.gut .n{font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:.9;color:var(--color-accent);margin-bottom:6px}
+.gut .p{color:var(--color-accent-700)}
+.gut .c{color:var(--color-neutral-600);overflow-wrap:anywhere}
+.h-lg{font-size:clamp(52px,7.4vw,96px);line-height:.9;text-transform:uppercase;margin:0;min-height:.9em}
+.h-md{font-size:clamp(34px,4.2vw,52px);line-height:.95;text-transform:uppercase;margin:0;min-height:.95em}
+.h-lg .cur,.h-md .cur{display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite}
+.row{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:10px 40px;padding:22px 0;border-bottom:1px solid var(--color-divider)}
+.bul{font-size:15px;line-height:1.55;margin:0 0 8px;padding-left:16px;position:relative;text-wrap:pretty}
+.bul::before{content:'›';position:absolute;left:0;color:var(--color-accent)}
+@media (max-width:759px){
+  .sec{grid-template-columns:minmax(0,1fr)}
+  .gut{position:static;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding-top:14px;margin-bottom:14px}
+  .gut .n{font-size:28px;margin:0}
+  .row{grid-template-columns:minmax(0,1fr)}
+}
 </style>
 </helmet>
 
@@ -54,13 +76,13 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
   <div style="position:absolute;left:-16px;top:0;width:32px;height:1px;background:var(--color-accent)"></div>
   <div style="position:absolute;left:0;top:-16px;width:1px;height:32px;background:var(--color-accent)"></div>
   <div ref="{{ ringRef }}" style="position:absolute;left:-7px;top:-7px;width:14px;height:14px;border:1px solid var(--color-accent);transition:transform .35s cubic-bezier(.2,.7,.2,1),background .3s"></div>
-  <span ref="{{ crossLbl }}" style="position:absolute;left:14px;top:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-accent-700);white-space:nowrap"></span>
+  <span ref="{{ crossLbl }}" style="position:absolute;left:14px;top:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);white-space:nowrap"></span>
 </div>
 
 <sc-if value="{{ xl }}" hint-placeholder-val="{{ false }}">
   <nav style="position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:55;display:grid;gap:12px">
     <sc-for list="{{ rail }}" as="r">
-      <button onClick="{{ r.go }}" title="{{ r.label }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ r.fg }};transition:color .3s">
+      <button onClick="{{ r.go }}" title="{{ r.label }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ r.fg }};transition:color .3s">
         <span style="opacity:{{ r.lo }};transition:opacity .3s">{{ r.num }}</span>
         <span style="height:1px;width:{{ r.w }};background:{{ r.bg }};transition:width .6s cubic-bezier(.2,.7,.2,1),background .3s"></span>
       </button>
@@ -131,15 +153,12 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
     </div>
   </div>
 
-  <section id="lab" data-sec="lab" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.lab }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">01 — ~/homelab · 2022 – Present</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.lab }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ ssh root@lapprox.home.lab</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start;perspective:1400px">
+  <section id="lab" data-sec="lab" class="sec" style="padding:72px 0 104px">
+    <div class="sweep" style="transform:{{ bars.lab }}"></div>
+    <div class="gut"><span class="n">01</span><span class="p">~/homelab</span><span>2022 – Present</span><span class="c">$ ssh root@lapprox.home.lab</span></div>
+    <div style="min-width:0">
+    <h2 class="h-lg" style="margin-bottom:40px">{{ head.lab }}<span class="cur"></span></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:40px;align-items:start;perspective:1400px">
       <figure data-tilt="0.5" class="blueprint" style="margin:0;padding:16px;opacity:{{ rv.lab.o }};transform:{{ rv.lab.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <svg viewBox="0 0 640 404" style="display:block;width:100%;height:auto;font-family:'JetBrains Mono',ui-monospace,monospace">
@@ -216,14 +235,15 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
         <a href="https://benheater.com/proxmox-cybersecurity-lab/" target="_blank" style="justify-self:start;margin-top:16px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">↗ benheater.com/proxmox-cybersecurity-lab</a>
       </div>
     </div>
+    </div>
   </section>
 
-  <section id="certs" data-sec="certs" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:24px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.certs }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">02 — ~/certs</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.certs }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
+  <section id="certs" data-sec="certs" class="sec" style="padding:56px 0 88px">
+    <div class="sweep" style="transform:{{ bars.certs }}"></div>
+    <div class="gut"><span class="n">02</span><span class="p">~/certs</span><span>11 issued · 2023 – 2026</span></div>
+    <div style="min-width:0">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 24px;margin-bottom:20px">
+      <h2 class="h-md">{{ head.certs }}<span class="cur"></span></h2>
       <div style="display:flex;flex-wrap:wrap;gap:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
         <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
           <button onClick="{{ f.pick }}" style="all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--color-divider);background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
@@ -244,63 +264,61 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
         </sc-for>
       </div>
     </div>
+    </div>
   </section>
 
-  <section id="projects" data-sec="projects" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.projects }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">03 — ~/src</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.projects }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ git log --author=khizar</div>
-    </div>
-    <article data-tilt="0.4" class="blueprint" style="margin-bottom:40px;padding:clamp(20px,3vw,32px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:32px 40px;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
-      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+  <section id="projects" data-sec="projects" class="sec" style="padding:72px 0 104px">
+    <div class="sweep" style="transform:{{ bars.projects }}"></div>
+    <div class="gut"><span class="n">03</span><span class="p">~/src</span><span class="c">$ git log --author=khizar</span></div>
+    <div style="min-width:0">
+    <h2 class="h-lg" style="margin-bottom:40px">{{ head.projects }}<span class="cur"></span></h2>
+    <article style="margin-bottom:72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px 48px;perspective:1400px;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
       <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)"><span>nasa / lunar-base-net</span><span class="tag tag-outline" style="white-space:nowrap;height:auto">team lead</span></div>
         <h3 style="font-size:clamp(34px,4.4vw,54px);line-height:.95;text-transform:uppercase;margin:0">NASA Pre-Apprenticeship — Moon Base Network</h3>
         <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">through Houston City College</div>
         <p style="font-size:17px;line-height:1.55;margin:0;text-wrap:pretty">Designing a network for the moon base. The project is about building a network around the moon's conditions, from choosing hardware that won't overheat without air to cool it and can handle the extreme temperature swings, to deciding which types of networks make sense there and building proper cybersecurity principles into the design.</p>
         <p style="font-size:17px;line-height:1.55;margin:0;text-wrap:pretty">That work also extends to the base's Wi-Fi, where we're exploring whether it could double as a way to locate instruments and equipment, and studying the variables that affect how it would perform on the lunar surface.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px;margin-top:auto">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:0 28px;margin-top:8px;border-top:1px solid var(--color-divider)">
           <sc-for list="{{ nasaMods }}" as="x" hint-placeholder-count="4">
-            <div style="border:1px solid var(--color-divider);padding:10px 12px;opacity:{{ x.o }};transform:{{ x.t }};transition:opacity .45s ease {{ x.d }},transform .55s cubic-bezier(.2,.7,.2,1) {{ x.d }}" style-hover="border-color:var(--color-accent);background:var(--color-accent-800)">
-              <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ x.id }}</div>
-              <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-transform:uppercase;line-height:1.1">{{ x.name }}</div>
+            <div style="display:flex;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--color-divider);opacity:{{ x.o }};transform:{{ x.t }};transition:opacity .45s ease {{ x.d }},transform .55s cubic-bezier(.2,.7,.2,1) {{ x.d }},color .2s" style-hover="color:var(--color-accent-100)">
+              <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ x.id }}</span>
+              <span style="font-family:var(--font-heading);font-weight:600;font-size:18px;text-transform:uppercase;line-height:1.1">{{ x.name }}</span>
             </div>
           </sc-for>
         </div>
       </div>
-      <figure style="margin:0;display:flex;flex-direction:column;gap:14px;min-width:0">
+      <figure data-tilt="0.4" class="blueprint" style="margin:0;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0;align-self:start">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <div style="position:relative;aspect-ratio:4/3;border:1px dashed var(--color-neutral-500);overflow:hidden;background:repeating-linear-gradient(0deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px)">
           <sc-for list="{{ ripples }}" as="r" hint-placeholder-count="3">
             <span style="position:absolute;left:50%;top:55%;width:140%;aspect-ratio:1;border:1px solid var(--color-accent);border-radius:50%;animation:ripple 3.6s cubic-bezier(.2,.6,.3,1) {{ r.d }} infinite"></span>
           </sc-for>
           <span style="position:absolute;left:50%;top:55%;width:14px;height:14px;transform:translate(-50%,-50%) rotate(45deg);background:var(--color-accent);box-shadow:0 0 16px var(--color-accent)"></span>
-          <span style="position:absolute;left:50%;top:55%;transform:translate(14px,8px);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-accent-700)">AP-01</span>
+          <span style="position:absolute;left:50%;top:55%;transform:translate(14px,8px);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">AP-01</span>
           <sc-for list="{{ instruments }}" as="i" hint-placeholder-count="5">
-            <div style="position:absolute;left:{{ i.x }};top:{{ i.y }};display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-text)">
+            <div style="position:absolute;left:{{ i.x }};top:{{ i.y }};display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-text)">
               <span style="width:8px;height:8px;border:1px solid var(--color-accent);background:{{ i.bg }};transition:background .3s"></span><span>{{ i.label }}</span>
             </div>
           </sc-for>
-          <div style="position:absolute;left:10px;top:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-neutral-700)">wifi-locate · {{ locFound }}</div>
+          <div style="position:absolute;left:10px;top:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-neutral-700)">wifi-locate · {{ locFound }}</div>
         </div>
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
           <div>
-            <div style="font-size:10px;color:var(--color-neutral-700)">SURFACE TEMP (APPROX.)</div>
+            <div style="font-size:11px;color:var(--color-neutral-700)">SURFACE TEMP (APPROX.)</div>
             <div style="font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:1;color:var(--color-accent)">{{ moonTemp }}</div>
           </div>
           <div style="flex:1 1 160px;max-width:240px">
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--color-neutral-700)"><span>−173°C</span><span>127°C</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-neutral-700)"><span>−173°C</span><span>127°C</span></div>
             <div style="height:6px;border:1px solid var(--color-divider);margin-top:4px;position:relative"><span style="position:absolute;top:-3px;width:2px;height:10px;background:var(--color-accent);left:{{ moonPct }}"></span></div>
           </div>
         </div>
-        <figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:var(--color-neutral-600)">FIG. 04 — Wi-Fi as a locator · lunar day/night swing</figcaption>
+        <figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-neutral-600)">FIG. 04 — Wi-Fi as a locator · lunar day/night swing</figcaption>
       </figure>
     </article>
-    <div style="perspective:1400px">
-      <article data-tilt="0.3" class="blueprint" style="padding:18px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px 32px;align-items:center;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
-        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700);margin-bottom:10px">also shipped</div>
+    <div>
+      <article style="padding:20px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px 40px;align-items:center;opacity:{{ rv.projects.o }};transform:{{ rv.projects.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
         <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
           <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)"><span>khizarahmed9 / repo</span><span class="tag tag-outline" style="white-space:nowrap;height:auto">fork · Actual Budget</span></div>
           <h3 style="font-size:30px;line-height:1;text-transform:uppercase;margin:0">Wayne Finance</h3>
@@ -318,24 +336,22 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
         </div>
       </article>
     </div>
-  
+    </div>
   </section>
 
-  <section id="skills" data-sec="skills" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.skills }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">04 — ~/skills</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.skills }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ lsmod | column · click a module to grep it</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:28px;perspective:1200px">
+  <section id="skills" data-sec="skills" class="sec" style="padding:56px 0 88px">
+    <div class="sweep" style="transform:{{ bars.skills }}"></div>
+    <div class="gut"><span class="n">04</span><span class="p">~/skills</span><span class="c">$ lsmod · click a module to grep it</span></div>
+    <div style="min-width:0">
+    <h2 class="h-md" style="margin-bottom:20px">{{ head.skills }}<span class="cur"></span></h2>
+    <div style="border-top:1px solid var(--color-divider)">
       <sc-for list="{{ skills }}" as="s" hint-placeholder-count="8">
-        <div data-tilt="1" class="blueprint" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)" style="padding:18px 20px;opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .5s ease {{ s.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ s.d }}">
-          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:6px">{{ s.id }}</div>
-          <h3 style="font-size:23px;text-transform:uppercase;margin:0 0 12px">{{ s.k }}</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 32px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--color-divider);opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .5s ease {{ s.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ s.d }}">
+          <div style="display:flex;align-items:baseline;gap:14px;min-width:0">
+            <span style="flex:none;width:58px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ s.id }}</span>
+            <h3 style="font-size:21px;line-height:1.1;text-transform:uppercase;margin:0">{{ s.k }}</h3>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;grid-column:span 2;min-width:0">
             <sc-for list="{{ s.items }}" as="it">
               <button class="tag tag-outline" onClick="{{ it.grep }}" title="grep this across the site" style="cursor:pointer;background:transparent;font-family:inherit" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ it.t }}</button>
             </sc-for>
@@ -343,46 +359,46 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
         </div>
       </sc-for>
     </div>
+    </div>
   </section>
 
-  <section id="activity" data-sec="activity" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.activity }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
+  <section id="activity" data-sec="activity" class="sec" style="padding:56px 0 96px">
+    <div class="sweep" style="transform:{{ bars.activity }}"></div>
+    <div class="gut"><span class="n">05</span><span class="p">~/activity</span><span class="c">$ cat *.log</span></div>
+    <div style="min-width:0">
+    <h2 class="h-md" style="margin-bottom:20px">{{ head.activity }}<span class="cur"></span></h2>
+    <div class="row" style="border-top:1px solid var(--color-divider);align-items:start;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
       <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">05 — ~/activity</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.activity }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">ncl.log · April 2026</div>
+        <h3 style="font-size:28px;line-height:1;text-transform:uppercase;margin:0">National Cyber League — Player</h3>
       </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ cat *.log</div>
+      <div>
+        <sc-for list="{{ nclStats }}" as="s" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:clamp(84px,8vw,124px) minmax(0,1fr);gap:16px;align-items:baseline;padding:2px 0 10px">
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:clamp(40px,4.4vw,56px);line-height:.95;color:var(--color-accent);font-variant-numeric:tabular-nums">{{ s.val }}</span>
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-800)">{{ s.label }}</span>
+          </div>
+        </sc-for>
+      </div>
     </div>
-    <div class="blueprint" style="padding:clamp(20px,3vw,32px);margin-bottom:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:24px;align-items:end;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
-      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">ncl.log · April 2026</div>
-        <h3 style="font-size:30px;text-transform:uppercase;margin:6px 0 0">National Cyber League — Player</h3>
-      </div>
-      <sc-for list="{{ nclStats }}" as="s" hint-placeholder-count="3">
-        <div style="border-left:1px solid var(--color-divider);padding-left:18px">
-          <div style="font-family:var(--font-heading);font-weight:600;font-size:clamp(56px,7vw,88px);line-height:.9;color:var(--color-accent)">{{ s.val }}</div>
-          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;margin-top:6px">{{ s.label }}</div>
+    <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+      <article class="row" style="opacity:{{ p.o }};transform:{{ p.t }};transition:opacity .5s ease {{ p.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ p.d }}">
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">{{ p.file }} · {{ p.when }}</div>
+          <h3 style="font-size:24px;line-height:1.05;text-transform:uppercase;margin:0">{{ p.title }}</h3>
         </div>
-      </sc-for>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;perspective:1200px">
-      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-        <article data-tilt="1" class="card blueprint" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)" style="padding:20px 22px;opacity:{{ p.o }};transform:{{ p.t }};transition:opacity .5s ease {{ p.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ p.d }}">
-          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-          <div style="display:flex;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:8px"><span>{{ p.file }}</span><span>{{ p.when }}</span></div>
-          <h3 style="font-size:24px;text-transform:uppercase;margin:0 0 10px">{{ p.title }}</h3>
-          <sc-for list="{{ p.bullets }}" as="x">
-            <p style="font-size:15px;margin:0 0 8px;padding-left:16px;position:relative;text-wrap:pretty"><span style="position:absolute;left:0;color:var(--color-accent)">›</span>{{ x }}</p>
-          </sc-for>
-        </article>
-      </sc-for>
+        <div>
+          <sc-for list="{{ p.bullets }}" as="x"><p class="bul">{{ x }}</p></sc-for>
+        </div>
+      </article>
+    </sc-for>
     </div>
   </section>
 
-  <section id="hackhcc" data-sec="hackhcc" style="padding:72px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;border-bottom:1px solid var(--color-divider);padding-bottom:14px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.hackhcc }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <span style="color:var(--color-accent-700)">06 — ~/hackhcc · organizer</span>
+  <section id="hackhcc" data-sec="hackhcc" style="position:relative;padding:20px 0 120px;border-top:1px solid var(--color-divider);scroll-margin-top:64px">
+    <div class="sweep" style="position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--color-accent);transform-origin:0 50%;transition:transform 1.3s cubic-bezier(.7,0,.2,1);transform:{{ bars.hackhcc }}"></div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
+      <span style="color:var(--color-accent-700)"><b style="font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:.9;color:var(--color-accent);vertical-align:-6px;margin-right:12px">06</b>~/hackhcc · organizer</span>
       <span style="display:flex;align-items:center;gap:8px;color:var(--color-neutral-700)"><span style="flex:none;width:8px;height:8px;background:var(--color-accent);animation:pulse 1.4s ease-in-out infinite"></span>Chief Technology Officer · Computer Science Association · 2025 – Present</span>
     </div>
     <div data-par="-0.12" style="position:relative;margin:24px 0 8px;font-family:var(--font-heading);font-weight:600;font-size:clamp(60px,19vw,300px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;color:var(--color-accent);text-shadow:0 0 40px color-mix(in srgb,var(--color-accent) 40%,transparent)">
@@ -391,14 +407,15 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
       <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-neutral-500);animation:glitchB 5.1s steps(1) infinite">{{ hackWord }}</span>
     </div>
     <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(26px,3.4vw,44px);line-height:1.05;text-transform:uppercase;margin:0 0 40px;max-width:22ch;opacity:{{ rv.hackhcc.o }};transform:{{ rv.hackhcc.t }};transition:opacity .6s ease .3s,transform .7s cubic-bezier(.2,.7,.2,1) .3s">The first ever hackathon for Houston City College.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:28px;align-items:stretch">
-      <div style="display:grid;gap:20px;perspective:1200px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:28px 56px;align-items:start">
+      <div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700);margin-bottom:6px">what I built for it</div>
         <sc-for list="{{ hackMods }}" as="m" hint-placeholder-count="3">
-          <div data-tilt="1" class="blueprint" style="padding:18px 20px;opacity:{{ m.o }};transform:{{ m.t }};transition:opacity .5s ease {{ m.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ m.d }}" style-hover="border-color:var(--color-accent);box-shadow:0 0 24px color-mix(in srgb,var(--color-accent) 22%,transparent)">
-            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-            <div style="display:flex;justify-content:space-between;gap:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700);margin-bottom:6px"><span>{{ m.id }}</span><span>{{ m.status }}</span></div>
-            <h3 style="font-size:28px;text-transform:uppercase;margin:0 0 12px">{{ m.name }}</h3>
-            <div style="height:6px;border:1px solid var(--color-divider)"><div style="height:100%;background:var(--color-accent);width:{{ m.w }};transition:width 1.4s cubic-bezier(.6,0,.2,1) {{ m.d2 }}"></div></div>
+          <div style="position:relative;display:grid;grid-template-columns:60px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--color-divider);opacity:{{ m.o }};transform:{{ m.t }};transition:opacity .5s ease {{ m.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ m.d }}">
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ m.id }}</span>
+            <h3 style="font-size:clamp(26px,3vw,36px);line-height:1;text-transform:uppercase;margin:0">{{ m.name }}</h3>
+            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">{{ m.status }}</span>
+            <span style="position:absolute;left:0;bottom:-1px;height:1px;background:var(--color-accent);width:{{ m.w }};transition:width 1.4s cubic-bezier(.6,0,.2,1) {{ m.d2 }}"></span>
           </div>
         </sc-for>
       </div>
@@ -412,52 +429,46 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
     </div>
   </section>
 
-  <section id="volunteer" data-sec="volunteer" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.volunteer }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">07 — ~/volunteer</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.volunteer }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ history | grep -i role</div>
-    </div>
+  <section id="volunteer" data-sec="volunteer" class="sec" style="padding:56px 0 80px">
+    <div class="sweep" style="transform:{{ bars.volunteer }}"></div>
+    <div class="gut"><span class="n">07</span><span class="p">~/volunteer</span><span class="c">$ history | grep -i role</span></div>
+    <div style="min-width:0">
+    <h2 class="h-md" style="margin-bottom:8px">{{ head.volunteer }}<span class="cur"></span></h2>
     <sc-for list="{{ vol }}" as="v" hint-placeholder-count="2">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px 40px;padding:24px 0;border-bottom:1px solid var(--color-divider);opacity:{{ v.o }};transform:{{ v.t }};transition:opacity .5s ease {{ v.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ v.d }}">
+      <div class="row" style="opacity:{{ v.o }};transform:{{ v.t }};transition:opacity .5s ease {{ v.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ v.d }}">
         <div>
           <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:4px">{{ v.when }}</div>
-          <h3 style="font-size:28px;text-transform:uppercase;margin:0">{{ v.role }}</h3>
-          <div style="font-size:15px;color:var(--color-neutral-700)">{{ v.org }}</div>
+          <h3 style="font-size:24px;line-height:1.05;text-transform:uppercase;margin:0">{{ v.role }}</h3>
+          <div style="font-size:15px;color:var(--color-neutral-800);margin-top:4px">{{ v.org }}</div>
         </div>
         <div>
-          <sc-for list="{{ v.bullets }}" as="x">
-            <p style="font-size:15px;margin:0 0 8px;padding-left:16px;position:relative;text-wrap:pretty"><span style="position:absolute;left:0;color:var(--color-accent)">›</span>{{ x }}</p>
-          </sc-for>
+          <sc-for list="{{ v.bullets }}" as="x"><p class="bul">{{ x }}</p></sc-for>
         </div>
       </div>
     </sc-for>
+    </div>
   </section>
 
-  <section id="edu" data-sec="edu" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:16px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.edu }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">08 — ~/edu</div>
-        <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.edu }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-      </div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-700)">$ git log --oneline</div>
-    </div>
+  <section id="edu" data-sec="edu" class="sec" style="padding:56px 0 72px">
+    <div class="sweep" style="transform:{{ bars.edu }}"></div>
+    <div class="gut"><span class="n">08</span><span class="p">~/edu</span><span class="c">$ git log --oneline</span></div>
+    <div style="min-width:0">
+    <h2 class="h-md" style="margin-bottom:8px">{{ head.edu }}<span class="cur"></span></h2>
     <sc-for list="{{ edu }}" as="e" hint-placeholder-count="2">
       <div style="display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--color-divider);opacity:{{ e.o }};transform:{{ e.t }};transition:opacity .5s ease {{ e.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ e.d }}">
         <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">{{ e.hash }}</span>
-        <div style="flex:1 1 300px;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:24px;text-transform:uppercase">{{ e.school }}</span> <span style="color:var(--color-neutral-700)">— {{ e.what }}</span></div>
+        <div style="flex:1 1 300px;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:24px;text-transform:uppercase">{{ e.school }}</span> <span style="color:var(--color-neutral-800)">— {{ e.what }}</span></div>
         <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">{{ e.when }}</span>
       </div>
     </sc-for>
+    </div>
   </section>
 
-  <section id="contact" data-sec="contact" style="padding:56px 0;scroll-margin-top:70px">
-    <div style="position:relative;border-bottom:1px solid var(--color-divider);padding-bottom:14px;margin-bottom:32px"><div style="position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--color-accent);box-shadow:0 0 10px var(--color-accent);transform-origin:0 50%;transform:{{ bars.contact }};transition:transform 1.3s cubic-bezier(.7,0,.2,1)"></div>
-      <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">09 — ~/contact</div>
-      <h2 style="font-size:clamp(44px,7vw,84px);line-height:.92;text-transform:uppercase;margin:0;min-height:.92em">{{ head.contact }}<span style="display:inline-block;width:.4em;height:.72em;background:var(--color-accent);margin-left:.06em;animation:blink 1s steps(1) infinite"></span></h2>
-    </div>
+  <section id="contact" data-sec="contact" class="sec" style="padding:56px 0 64px">
+    <div class="sweep" style="transform:{{ bars.contact }}"></div>
+    <div class="gut"><span class="n">09</span><span class="p">~/contact</span></div>
+    <div style="min-width:0">
+    <h2 class="h-md" style="margin-bottom:28px">{{ head.contact }}<span class="cur"></span></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start;perspective:1400px">
       <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(28px,3.4vw,40px);line-height:1.1;text-transform:uppercase;margin:0;text-wrap:pretty;opacity:{{ rv.contact.o }};transform:{{ rv.contact.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">Seeking an internship or entry-level role in IT support, systems administration or security operations.</p>
       <div data-tilt="0.7" class="blueprint" style="padding:22px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px">
@@ -472,10 +483,11 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
         </sc-for>
       </div>
     </div>
+    </div>
   </section>
 
   <footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:32px 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-neutral-700)">
-    <span>© 2026 Khizar Ahmed</span><span style="color:var(--color-neutral-500)">echo ZmxhZ3tjdXJpb3VzX2xlYXJuZXJfMjA3N30= | base64 -d</span><span>EOF</span>
+    <span>© 2026 Khizar Ahmed</span><span style="color:var(--color-neutral-600)">echo ZmxhZ3tjdXJpb3VzX2xlYXJuZXJfMjA3N30= | base64 -d</span><span>EOF</span>
   </footer>
 </main>
 

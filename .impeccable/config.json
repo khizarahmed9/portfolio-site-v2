@@ -1,0 +1,69 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "numbered-section-labels",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:33:19.503Z",
+        "reason": "Agent: section numbers map to the 0-9 jump keys and right rail (CLAUDE.md SEC_IDS order)"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:33:19.520Z",
+        "reason": "Agent: CRT scanline overlay and NASA figure grid are pinned in CLAUDE.md"
+      },
+      {
+        "rule": "em-dash-overuse",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:33:19.528Z",
+        "reason": "Agent: CLAUDE.md requires the user's copy verbatim"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:33:25.920Z",
+        "reason": "Agent: every flagged glow is the h1/h2 phosphor glow pinned in CLAUDE.md (detector resolves var(--color-accent) to the DS default #5980a6)"
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:34:08.990Z",
+        "reason": "Agent: flagged run is a 28-44px Barlow Condensed display statement; CLAUDE.md pins uppercase headings and verbatim copy"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-15T06:34:08.997Z",
+        "reason": "Agent: tight leading is on multi-line display-size condensed headings, not body text (body uses 1.5-1.55)"
+      }
+    ]
+  }
+}
