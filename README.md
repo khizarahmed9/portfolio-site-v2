@@ -48,12 +48,6 @@ npx wrangler deploy
 
 `.assetsignore` keeps repo-only files, such as this README, `docs/` and `LICENSE`, out of the deployed site.
 
-## Contact
-
-- Email: [website@khiz3r.me](mailto:website@khiz3r.me)
-- LinkedIn: [linkedin.com/in/khizar-ahmed9](https://linkedin.com/in/khizar-ahmed9)
-- GitHub: [@khizarahmed9](https://github.com/khizarahmed9)
-
 ## License
 
 [MIT](LICENSE). The code is free to reuse. The resume content and personal details are mine, so please don't present them as yours.
