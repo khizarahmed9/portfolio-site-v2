@@ -17,7 +17,7 @@ The site has to pass the quick skim and still reward the close read.
 
 ## Product Purpose
 
-The personal portfolio and resume site of Khizar Ahmed, a 17-year-old Information Systems student at Houston City College. It exists to get him an internship or entry-level role in IT support, sysadmin, or SecOps.
+The personal portfolio and resume site of Khizar Ahmed, a 18-year-old Information Systems student at Houston City College. It exists to get him an internship or entry-level role in IT support, sysadmin, or SecOps.
 
 A visit succeeds when the visitor:
 - remembers him, since the terminal and CTF experience is meant to stick;

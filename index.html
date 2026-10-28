@@ -412,13 +412,14 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="gut"><span class="n">05</span><span class="p">~/activity</span><span class="c">$ cat *.log</span></div>
     <div style="min-width:0">
     <h2 class="h-md" style="margin-bottom:20px">{{ head.activity }}<span class="cur"></span></h2>
-    <div class="row" style="border-top:1px solid var(--color-divider);align-items:start;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
+    <sc-for list="{{ nclSeasons }}" as="n" hint-placeholder-count="2">
+    <div class="row" style="border-top:{{ n.bt }};align-items:start;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
       <div>
-        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">ncl.log · April 2026</div>
+        <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:6px">ncl.log · {{ n.when }}</div>
         <h3 style="font-size:28px;line-height:1;text-transform:uppercase;margin:0">National Cyber League — Player</h3>
       </div>
       <div>
-        <sc-for list="{{ nclStats }}" as="s" hint-placeholder-count="3">
+        <sc-for list="{{ n.stats }}" as="s" hint-placeholder-count="3">
           <div style="display:grid;grid-template-columns:clamp(84px,8vw,124px) minmax(0,1fr);gap:16px;align-items:baseline;padding:2px 0 10px">
             <span style="font-family:var(--font-heading);font-weight:600;font-size:clamp(40px,4.4vw,56px);line-height:.95;color:var(--color-accent);font-variant-numeric:tabular-nums">{{ s.val }}</span>
             <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-neutral-800)">{{ s.label }}</span>
@@ -426,6 +427,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
         </sc-for>
       </div>
     </div>
+    </sc-for>
     <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
       <article class="row" style="opacity:{{ p.o }};transform:{{ p.t }};transition:opacity .5s ease {{ p.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ p.d }}">
         <div>
@@ -557,7 +559,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;skipBoot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;scanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;typeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.5,&quot;max&quot;:3,&quot;step&quot;:0.25,&quot;tsType&quot;:&quot;number&quot;}}">
 const NAME = 'KHIZAR AHMED';
-const BIO = 'A curious learner driven to understand how systems work down to the lowest level. 17-year-old Information Systems student with eleven certifications including CCNA, CompTIA CySA+, Security+, Network+ and A+, plus four years running a self-hosted Proxmox and pfSense lab.';
+const BIO = 'A curious learner driven to understand how systems work down to the lowest level. 18-year-old Information Systems student with eleven certifications including CCNA, CompTIA CySA+, Security+, Network+ and A+, plus four years running a self-hosted Proxmox and pfSense lab.';
 const HERO_CMD = 'cat about.txt';
 const GLYPHS = '#%&*+=<>/\\|01$@';
 const TITLES = { certs: 'Certifications', skills: 'Technical Skills', lab: 'Home Lab', projects: 'Projects', activity: 'Activities', volunteer: 'Volunteering', edu: 'Education', contact: 'Contact' };
@@ -615,7 +617,7 @@ const CONTACTS = [
 ];
 const SYSINFO = [
   ['user', 'khizar ahmed'], ['host', 'houston.tx'], ['uptime', '18 years'], ['role', 'Information Systems student · HCC'], ['certs', '11 · CCNA, CySA+, Sec+, Net+, A+'],
-  ['lab', 'Proxmox + pfSense · 4 yrs'], ['thm', '300+ labs'], ['ncl', '30th individual · 23rd team (national)'], ['seeking', 'IT support · sysadmin · SecOps'],
+  ['lab', 'Proxmox + pfSense · 4 yrs'], ['thm', '300+ labs'], ['ncl', 'Fall 2026: 136th of 6,366 overall · 2nd of 72 at HCC'], ['seeking', 'IT support · sysadmin · SecOps'],
 ];
 const BOOT = [
   ['', 'KA-BIOS (C) 2026 — portfolio firmware'],
@@ -642,6 +644,10 @@ const HACKLOG = [
   ['', 'status: first ever hackathon for Houston City College'],
 ];
 const HACKMODS = [['mod/01', 'Website development'], ['mod/02', 'Sign up portal'], ['mod/03', 'Emails']];
+const NCL = [
+  { when: 'Fall 2026', stats: [[2, 72, 'Houston City College'], [24, 410, 'Experienced bracket'], [136, 6366, 'nationally']] },
+  { when: 'Spring 2026', stats: [[1, 0, 'HCC · individual & team'], [30, 469, 'national · individual'], [23, 341, 'national · team']] },
+];
 const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'));
 const B64 = 'ZmxhZ3tjdXJpb3VzX2xlYXJuZXJfMjA3N30=';
 const FLAG = 'flag{curious_learner_2077}';
@@ -888,7 +894,7 @@ class Component extends DCLogic {
     if (c === 'clear') { this.setState({ out: [], cmd: '' }); return; }
     let r;
     if (c === 'help') r = HELP;
-    else if (c === 'whoami') r = 'khizar ahmed, 17 — Information Systems student, Houston, TX';
+    else if (c === 'whoami') r = 'khizar ahmed, 18 — Information Systems student, Houston, TX';
     else if (SEC_IDS[c] || c === 'home' || c === '~') { const id = SEC_IDS[c] || 'top'; this.go(id); r = 'cd ~/' + (SEC_IDS[c] || ''); }
     else if (c === 'resume') { window.open('uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf', '_blank'); r = 'opening resume.pdf'; }
     else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
@@ -940,10 +946,10 @@ class Component extends DCLogic {
       certDone: rvi('certs', certs.length + 3, 130),
       skills: SKILLS.map(([id, k, items], i) => ({ id, k, items: items.map(t => ({ t, grep: () => this.grep(t.replace(/\s*\(.*\)/, '')) })), ...rvi('skills', i, 80) })),
       labItems: LAB.map((t2, i) => ({ n: '0' + (i + 1), t2, ...rvi('lab', i + 2, 120) })),
-      nclStats: [[1, 'HCC · individual & team'], [30, 'national · individual'], [23, 'national · team']].map(([n, label]) => { const e = 1 - Math.pow(1 - s.nclP, 3); return { val: ord(Math.max(1, Math.round(n * e))), label }; }),
+      nclSeasons: NCL.map((n, k) => { const e = 1 - Math.pow(1 - s.nclP, 3); return { when: n.when, bt: k ? '0' : '1px solid var(--color-divider)', stats: n.stats.map(([v, of, label]) => ({ val: ord(Math.max(1, Math.round(v * e))), label: (of ? 'of ' + of.toLocaleString('en-US') + ' · ' : '') + label })) }; }),
       glitch: () => { if (s.nameP >= NAME.length && s.bioN >= BIO.length) this.setState({ nameP: 0 }); },
       rainRef: this.rainRef, crossRef: this.crossRef, crossLbl: this.crossLbl,
-      marquee: [...CERTS.map(c => c.n), 'NCL · 30th national', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs'].concat([...CERTS.map(c => c.n), 'NCL · 30th national', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs']),
+      marquee: [...CERTS.map(c => c.n), 'NCL · 136th of 6,366 (Fall 2026)', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs'].concat([...CERTS.map(c => c.n), 'NCL · 136th of 6,366 (Fall 2026)', 'TryHackMe · 300+ labs', 'HackHCC · organizer', 'NASA pre-apprenticeship · team lead', 'Proxmox · pfSense · 4 yrs']),
       hackWord: (() => { const hp = Math.floor(s.hackP); let w = ''; for (let i = 0; i < HACK.length; i++) w += i < hp ? HACK[i] : (seen.hackhcc ? GLYPHS[(Math.random() * GLYPHS.length) | 0] : '_'); return w; })(),
       feats: [['feat/01', 'AI'], ['feat/02', 'Auto receipt ingestion'], ['feat/03', 'PWA mobile app'], ['feat/04', 'Simplified usage']].map(([id, name], i) => ({ id, name, ...rvi('projects', i + 2, 110) })),
       cloneLine: CLONE.slice(0, s.cloneN || 0),
