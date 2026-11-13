@@ -41,7 +41,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 @media (min-width:1000px){.labfig{display:grid;grid-template-columns:minmax(0,3fr) minmax(220px,1fr);gap:28px;align-items:center}.labfig .labinfo{border-top:0!important;margin-top:0!important;padding:0 0 0 24px!important;border-left:1px solid var(--color-divider)}}
 @media (max-width:759px){.labsvg{min-width:640px}}
 /* certs: full-bleed boot-log band */
-.band{position:relative;margin-inline:calc(50% - 50vw);padding-inline:calc(50vw - 50%);background:var(--color-accent-900);border-top:1px solid var(--color-accent-800);border-bottom:1px solid var(--color-accent-800)}
+.band{position:relative;margin-inline:calc(50% - 50vw);padding-inline:calc(50vw - 50%);background:color-mix(in srgb,var(--color-accent-900) 60%,transparent);border-top:1px solid var(--color-accent-800);border-bottom:1px solid var(--color-accent-800)}
 .log{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.6}
 .ln{display:grid;grid-template-columns:96px 52px minmax(0,1fr) auto;gap:2px 14px;align-items:baseline;padding:7px 10px;margin:0 -10px;outline:none;cursor:default}
 .ln:hover,.ln:focus-visible{background:var(--color-accent-800)}
@@ -128,6 +128,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   </nav>
 </sc-if>
 
+<canvas ref="{{ rainRef }}" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.22;-webkit-mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.45) 22%,rgba(0,0,0,.45) 78%,#000);mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.45) 22%,rgba(0,0,0,.45) 78%,#000)"></canvas>
 <header ref="{{ headerRef }}" style="transition:transform .45s cubic-bezier(.2,.7,.2,1);position:sticky;top:0;z-index:50;background:var(--color-bg);border-bottom:1px solid var(--color-divider)">
   <div style="max-width:1240px;margin:0 auto;padding:12px clamp(16px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
     <button onClick="{{ goTop }}" style="all:unset;cursor:pointer;display:flex;align-items:baseline;gap:10px">
@@ -151,7 +152,6 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 <main ref="{{ mainRef }}" style="transform-origin:50% 0;max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 200px">
 
   <section ref="{{ heroRef }}" id="top" data-sec="hero" style="perspective:1200px;background:radial-gradient(560px circle at var(--mx,70%) var(--my,40%),color-mix(in srgb,var(--color-accent) 10%,transparent),transparent 70%);position:relative;z-index:0;padding:clamp(40px,8vw,96px) 0 clamp(48px,8vw,96px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:48px;align-items:end">
-    <canvas ref="{{ rainRef }}" style="position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.28;-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%)"></canvas>
     <div>
       <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:18px;letter-spacing:.04em">[ PID 2077 ] · HOUSTON, TX · UP {{ uptime }}</div>
       <h1 data-par="-0.07" onMouseEnter="{{ glitch }}" title="hover to re-decode" style="cursor:crosshair;font-size:clamp(72px,13vw,176px);line-height:.84;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 32px">
@@ -749,7 +749,7 @@ class Component extends DCLogic {
     let last = 0;
     const draw = t => {
       this.rainRaf = requestAnimationFrame(draw);
-      if (t - last < 60 || scrollY > H) return; last = t;
+      if (t - last < 60) return; last = t;
       ctx.fillStyle = 'rgba(7,10,7,.16)'; ctx.fillRect(0, 0, W, H);
       ctx.font = "13px 'JetBrains Mono', monospace";
       cols.forEach((y, i) => {
