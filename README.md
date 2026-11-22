@@ -4,7 +4,7 @@
 
 My personal portfolio and resume site, built as an old-school phosphor terminal. I'm an Information Systems student at Houston City College looking for an internship or entry-level role in IT support, systems administration, or security operations.
 
-![Portfolio hero: name, bio and sysinfo panel on a green phosphor terminal](docs/screenshot.png)
+![Portfolio hero: name, bio and sysinfo panel on a green phosphor terminal](og.png)
 
 ## What's on it
 
@@ -46,7 +46,7 @@ Cloudflare deploys the site automatically on every push to `main`. To deploy by 
 npx wrangler deploy
 ```
 
-`.assetsignore` keeps repo-only files, such as this README, `docs/` and `LICENSE`, out of the deployed site.
+`.assetsignore` keeps repo-only files, such as this README and `LICENSE`, out of the deployed site.
 
 ## License
 

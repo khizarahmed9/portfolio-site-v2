@@ -60,7 +60,7 @@ The site itself works as a skills demonstration: an interactive lab diagram, a c
 
 ## Evidence on Hand
 
-- Resume: `uploads/Khizar Ahmed Resume 9.22.2026.pdf`.
+- Resume: `resume.pdf` (replace this file to update; the URL stays the same).
 - Certifications with Credly references, NCL rankings, the TryHackMe count, the HackHCC role, and Compudopt volunteering, all already in the page copy.
 - Projects: the NASA moon-base network (the instrument names and lunar temps in its figure are illustrative) and Wayne Finance (`khizarahmed9/hackrice-finance-thingy`, HackRice 2026).
 - Not on hand, and never to be fabricated: testimonials, references, employer endorsements, metrics beyond those stated.
