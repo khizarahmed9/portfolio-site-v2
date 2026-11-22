@@ -292,7 +292,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   <section id="certs" data-sec="certs" class="band">
     <div class="sec" style="padding:56px 0 72px;border-top:0">
     <div class="sweep" style="transform:{{ bars.certs }}"></div>
-    <div class="gut"><span class="n">02</span><span class="p">~/certs</span><span>11 issued · 2023 – 2026</span><span class="c">tty1 · /var/log/certs.log</span></div>
+    <div class="gut"><span class="n">02</span><span class="p">~/certs</span><span>11 issued · 2026 – 2023</span><span class="c">tty1 · /var/log/certs.log</span></div>
     <div style="min-width:0">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 24px;margin-bottom:24px">
       <h2 class="h-md">{{ head.certs }}<span class="cur"></span></h2>
@@ -634,7 +634,7 @@ const BOOT = [
   ['', 'KA-BIOS (C) 2026 — portfolio firmware'],
   ['', 'CPU0: curious learner @ lowest-level'],
   ['', 'Memory test ........................ OK'],
-  ['', 'Probing interfaces ...... eth0 vlan10 vlan20 vlan30'],
+  ['', 'Probing interfaces ...... eth0 vlan80 vlan666 vlan999'],
   ['', 'Loading certification modules:'],
   ...CERTS.slice().reverse().map(c => ['[ OK ]', c.f + '.ko']),
   ['[ OK ]', 'Mounted /home/khizar'],
@@ -956,7 +956,7 @@ class Component extends DCLogic {
       filters: flt.map(([k, label]) => ({ label, pick: () => this.setState({ filter: k }), bg: s.filter === k ? 'var(--color-accent)' : 'transparent', fg: s.filter === k ? 'var(--color-bg)' : 'var(--color-text)' })),
       filterFlag: s.filter === 'all' ? '' : '--vendor=' + s.filter,
       certCount: certs.length,
-      certRows: certs.slice().reverse().map((c, i) => ({ ...c, ...rvi('certs', i + 2, 130) })),
+      certRows: certs.map((c, i) => ({ ...c, ...rvi('certs', i + 2, 130) })),
       certDone: rvi('certs', certs.length + 3, 130),
       skills: SKILLS.map(([id, k, items], i) => ({ id, k, items: items.map(t => ({ t, grep: () => this.grep(t.replace(/\s*\(.*\)/, '')) })), ...rvi('skills', i, 80) })),
       labItems: LAB.map((t2, i) => ({ n: '0' + (i + 1), t2, ...rvi('lab', i + 2, 120) })),
