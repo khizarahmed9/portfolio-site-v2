@@ -107,7 +107,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   .hnav{padding-right:48px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 }
 /* touch: 44px tap targets; !important beats the inline all:unset styles */
-@media (pointer:coarse){header button,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}}
+@media (pointer:coarse){header button,header nav a,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,header nav a,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}.glink{display:inline-flex!important;align-items:center;min-height:44px!important}}
 </style>
 </helmet>
 
@@ -138,10 +138,10 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 <sc-if value="{{ xl }}" hint-placeholder-val="{{ false }}">
   <nav style="position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:55;display:grid;gap:12px">
     <sc-for list="{{ rail }}" as="r">
-      <button onClick="{{ r.go }}" title="{{ r.label }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ r.fg }};transition:color .3s">
+      <a href="{{ r.href }}" onClick="{{ r.go }}" title="{{ r.label }}" aria-label="{{ r.label }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ r.fg }};transition:color .3s">
         <span style="opacity:{{ r.lo }};transition:opacity .3s">{{ r.num }}</span>
         <span style="height:1px;width:{{ r.w }};background:{{ r.bg }};transition:width .6s cubic-bezier(.2,.7,.2,1),background .3s"></span>
-      </button>
+      </a>
     </sc-for>
   </nav>
 </sc-if>
@@ -155,7 +155,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     </button>
     <nav class="hnav" style="display:flex;flex-wrap:nowrap;gap:2px;flex:1 1 520px;min-width:0;overflow-x:auto;scrollbar-width:none;margin:0 -8px">
       <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
-        <button onClick="{{ n.go }}" onMouseEnter="{{ n.hov }}" style="all:unset;cursor:pointer;padding:8px;white-space:nowrap;flex:none;color:var(--color-neutral-800)" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ n.label }}</button>
+        <a href="{{ n.href }}" onClick="{{ n.go }}" onMouseEnter="{{ n.hov }}" style="all:unset;cursor:pointer;padding:8px;white-space:nowrap;flex:none;color:var(--color-neutral-800)" style-hover="background:var(--color-accent-800);color:var(--color-accent-100)">{{ n.label }}</a>
       </sc-for>
     </nav>
     <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
@@ -562,7 +562,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   <div style="max-width:1240px;margin:0 auto;padding:10px clamp(16px,4vw,40px) 12px">
     <div aria-live="polite" style="display:flex;flex-direction:column;justify-content:flex-end;gap:2px;margin-bottom:6px;height:{{ outH }};overflow:hidden;transition:height .45s cubic-bezier(.2,.7,.2,1)">
       <sc-for list="{{ out }}" as="o">
-        <div style="white-space:pre-wrap;color:{{ o.c }}">{{ o.t }}</div>
+        <div style="white-space:pre-wrap;color:{{ o.c }}"><sc-for list="{{ o.links }}" as="l"><a class="glink" href="{{ l.href }}" onClick="{{ l.go }}" onMouseDown="{{ l.keep }}" style="color:inherit;margin-right:2ch">{{ l.label }}</a></sc-for>{{ o.t }}</div>
       </sc-for>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
@@ -714,8 +714,8 @@ class Component extends DCLogic {
       ['activity', 'National Cyber League ' + PROJECTS.map(p => p.title + ' ' + p.bullets.join(' ')).join(' ')], ['hackhcc', HACKLOG.map(l => l[1]).join(' ')],
       ['volunteer', VOL.map(v => v.role + ' ' + v.org + ' ' + v.bullets.join(' ')).join(' ')], ['edu', EDU.map(e => e.school + ' ' + e.what).join(' ')],
     ];
-    corpus.forEach(([k, t]) => { const n = t.toLowerCase().split(q).length - 1; if (n) hits.push('~/' + k + (n > 1 ? '(' + n + ')' : '')); });
-    this.print([{ t: '$ grep -ril "' + term + '" ~', c: 'var(--color-accent-400)' }, { t: hits.length ? hits.join('  ') + '  — ' + hits.length + ' file' + (hits.length > 1 ? 's' : '') : 'no matches', c: 'var(--color-accent-100)' }]);
+    corpus.forEach(([k, t]) => { const n = t.toLowerCase().split(q).length - 1; if (n) hits.push({ id: SEC_IDS[k] || 'top', label: '~/' + k + (n > 1 ? '(' + n + ')' : '') }); });
+    this.print([{ t: '$ grep -ril "' + term + '" ~', c: 'var(--color-accent-400)' }, { links: hits, t: hits.length ? '— ' + hits.length + ' file' + (hits.length > 1 ? 's' : '') : 'no matches', c: 'var(--color-accent-100)' }]);
   }
   inputRef = React.createRef(); mainRef = React.createRef(); headerRef = React.createRef(); marqRef = React.createRef(); heroRef = React.createRef(); ringRef = React.createRef();
   startMotion() {
@@ -757,7 +757,7 @@ class Component extends DCLogic {
       mags.forEach((v, b) => { v.x = lerp(v.x, v.tx, .18); v.y = lerp(v.y, v.ty, .18); b.style.translate = Math.abs(v.x) + Math.abs(v.y) < .05 ? '' : v.x.toFixed(2) + 'px ' + v.y.toFixed(2) + 'px'; });
       if (fine) { cur.x = lerp(cur.x, mouse.x, .24); cur.y = lerp(cur.y, mouse.y, .24); const c = this.crossRef.current; if (c) c.style.transform = 'translate(' + cur.x.toFixed(1) + 'px,' + cur.y.toFixed(1) + 'px)'; }
       const h = this.heroRef.current; if (h) { if (!spot.on) { spotC.x = spot.x = h.offsetWidth * .7; spotC.y = spot.y = h.offsetHeight * .4; } spotC.x = lerp(spotC.x, spot.x, .08); spotC.y = lerp(spotC.y, spot.y, .08); h.style.setProperty('--mx', spotC.x.toFixed(0) + 'px'); h.style.setProperty('--my', spotC.y.toFixed(0) + 'px'); }
-      if (frame % 8 === 0) { let act = 'top'; for (const id of ids) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < innerHeight * .45) act = id; } if (act !== this.state.active) this.setState({ active: act }); }
+      if (frame % 8 === 0) { let act = 'top'; for (const id of ids) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < innerHeight * .45) act = id; } if (act !== this.state.active) { this.setState({ active: act }); if (!this.deepLink) history.replaceState(null, '', act === 'top' ? location.pathname + location.search : '#' + act); } }
     };
     this.motionRaf = requestAnimationFrame(loop);
   } rainRef = React.createRef(); crossRef = React.createRef(); crossLbl = React.createRef();
@@ -797,7 +797,9 @@ class Component extends DCLogic {
   componentDidMount() {
     let booted = false;
     try { booted = sessionStorage.getItem('booted') === '1'; } catch (e) {}
-    if (this.props.skipBoot || booted) this.setState({ phase: 'gone', seen: { hero: true } });
+    const h = location.hash.slice(1);
+    this.deepLink = Object.values(SEC_IDS).includes(h) ? h : null;
+    if (this.props.skipBoot || booted) { this.setState({ phase: 'gone', seen: { hero: true } }); setTimeout(() => this.landDeepLink(), 50); }
     else this.startBoot();
     this.tickI = setInterval(() => this.tick(), 28);
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -874,7 +876,16 @@ class Component extends DCLogic {
     try { sessionStorage.setItem('booted', '1'); } catch (e) {}
     this.setState({ phase: 'out', bootN: BOOT.length, nameP: 0, heroN: 0, bioN: 0, seen: { ...this.state.seen, hero: true } });
     setTimeout(() => this.setState({ phase: 'gone' }), 850);
+    this.landDeepLink();
   }
+  landDeepLink() {
+    const id = this.deepLink; if (!id) return;
+    // hero typing grows the page above the target and webfonts shift it, so finish the (off-screen) hero text and wait for fonts first
+    this.setState({ nameP: NAME.length, heroN: HERO_CMD.length, bioN: BIO.length }, () => document.fonts.ready.then(() => {
+      this.go(id); setTimeout(() => { this.deepLink = null; }, 1200); // hold the hash until the smooth scroll settles
+    }));
+  }
+  jump(id) { return e => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); this.go(id); }; }
   tick() {
     const s = this.state; if (s.phase === 'run') return;
     const sp = this.speed(), ch = {};
@@ -960,8 +971,8 @@ class Component extends DCLogic {
       uptime: pad(Math.floor(up / 3600)) + ':' + pad(Math.floor(up / 60) % 60) + ':' + pad(up % 60),
       clock: s.now.toLocaleTimeString('en-US', { hour12: false }),
       scrollBar: '[' + '#'.repeat(filled) + '.'.repeat(16 - filled) + '] ' + String(Math.round(s.scroll * 100)).padStart(3, ' ') + '%',
-      navItems: Object.keys(SEC_IDS).map(k => { const L = '~/' + k; let label = L; if (s.navScr && s.navScr.k === k && s.navScr.p < L.length) { label = ''; for (let i = 0; i < L.length; i++) label += i < s.navScr.p ? L[i] : GLYPHS[(Math.random() * GLYPHS.length) | 0]; } return { label, go: () => this.go(SEC_IDS[k]), hov: () => this.setState({ navScr: { k, p: 2, len: L.length } }) }; }),
-      rail: ['top', ...Object.keys(SEC_IDS)].map((k, i) => { const id = k === 'top' ? 'top' : SEC_IDS[k], on = s.active === id; return { label: k === 'top' ? 'home' : '~/' + k, num: String(i).padStart(2, '0'), go: () => this.go(id), fg: on ? 'var(--color-accent)' : 'var(--color-neutral-600)', lo: on ? 1 : 0, w: on ? '36px' : '14px', bg: on ? 'var(--color-accent)' : 'var(--color-neutral-500)' }; }),
+      navItems: Object.keys(SEC_IDS).map(k => { const L = '~/' + k; let label = L; if (s.navScr && s.navScr.k === k && s.navScr.p < L.length) { label = ''; for (let i = 0; i < L.length; i++) label += i < s.navScr.p ? L[i] : GLYPHS[(Math.random() * GLYPHS.length) | 0]; } return { label, href: '#' + SEC_IDS[k], go: this.jump(SEC_IDS[k]), hov: () => this.setState({ navScr: { k, p: 2, len: L.length } }) }; }),
+      rail: ['top', ...Object.keys(SEC_IDS)].map((k, i) => { const id = k === 'top' ? 'top' : SEC_IDS[k], on = s.active === id; return { label: k === 'top' ? 'home' : '~/' + k, num: String(i).padStart(2, '0'), href: '#' + id, go: this.jump(id), fg: on ? 'var(--color-accent)' : 'var(--color-neutral-600)', lo: on ? 1 : 0, w: on ? '36px' : '14px', bg: on ? 'var(--color-accent)' : 'var(--color-neutral-500)' }; }),
       xl: s.xl,
       bars: Object.fromEntries(Object.keys(SEC_IDS).map(k => [k, seen[k] ? 'scaleX(1)' : 'scaleX(0)'])),
       mainRef: this.mainRef, headerRef: this.headerRef, marqRef: this.marqRef, heroRef: this.heroRef, ringRef: this.ringRef,
@@ -1003,7 +1014,7 @@ class Component extends DCLogic {
       vol: VOL.map((v, i) => ({ ...v, ...rvi('volunteer', i, 140) })),
       edu: EDU.map((e, i) => ({ ...e, ...rvi('edu', i, 140) })),
       contacts: CONTACTS.map((c, i) => ({ ...c, plain: !c.href, ...rvi('contact', i + 1, 110) })),
-      out: s.out,
+      out: s.out.map(o => ({ ...o, links: (o.links || []).map(l => ({ ...l, href: '#' + l.id, go: this.jump(l.id), keep: e => e.preventDefault() })) })),
       wide: s.wide,
       cmdHint: s.wide ? 'help · / focus · ↑↓ history · tab completes · 0–9 jump' : 'type help',
       inputSize: s.wide ? '13px' : '16px',
@@ -1014,7 +1025,7 @@ class Component extends DCLogic {
         if (e.key === 'Enter') this.run(s.cmd);
         else if (e.key === 'ArrowUp') { e.preventDefault(); if (this.hist.length) { this.hi = Math.max(0, this.hi - 1); this.setState({ cmd: this.hist[this.hi] }); } }
         else if (e.key === 'ArrowDown') { e.preventDefault(); this.hi = Math.min(this.hist.length, this.hi + 1); this.setState({ cmd: this.hist[this.hi] || '' }); }
-        else if (e.key === 'Tab') {
+        else if (e.key === 'Tab' && !e.shiftKey) { // Shift+Tab still leaves the input (reaches grep result links)
           e.preventDefault();
           const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
           const m = all.filter(x => x.startsWith(s.cmd.toLowerCase()));
