@@ -694,7 +694,9 @@ const LABNODES = {
   v999: ['vlan999.isolated', 'Isolated targets reachable only from Kali: Vulnhub and HackMyVM boxes.'],
 };
 const LABNAMES = { wan: 'home router · WAN', br0: 'vmbr0 · OVS bridge', siem: 'Wazuh SIEM + NIDS', nix: 'NixOS · Portainer', vpn: 'WireGuard · OpenVPN', pf: 'pfSense VM', br1: 'vmbr1 · VLAN trunk', nat: 'NATIVE · Kali Linux', v80: 'VLAN 80 · Active Directory lab', v666: 'VLAN 666 · untrusted · internet', v999: 'VLAN 999 · isolated · Kali only' };
-const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · flag · boot · theme [green|amber|white] · clear · keys 0–9 jump';
+const PORTS = [[22, 'lab'], [25, 'contact'], [80, 'projects'], [443, 'certs'], [1337, 'skills'], [2077, 'activity'], [3000, 'hackhcc'], [8000, 'volunteer'], [8080, 'edu']];
+const PROCS = ['hackhcc', 'wayne-finance', 'nasa-moon-base', 'tryhackme', 'ncl', 'proxmox', 'wazuh']; // names already on the page
+const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · nmap · htop · flag · boot · theme [green|amber|white] · clear · keys 0–9 jump';
 
 class Component extends DCLogic {
   state = { bootN: 0, phase: 'run', nameP: 0, heroN: 0, bioN: 0, seen: {}, typed: {}, filter: 'all', cmd: '', out: [{ t: 'portfolio shell ready — ' + HELP, c: 'var(--color-accent-300)' }], now: new Date(), t0: Date.now(), scroll: 0, moonT: 0, focused: false, labSel: 'pf', active: 'top', xl: false, navScr: null, wide: typeof innerWidth === 'undefined' ? true : innerWidth >= 760, nclP: 0, hackP: 0, hackN: 0 };
@@ -724,6 +726,22 @@ class Component extends DCLogic {
     ];
     corpus.forEach(([k, t]) => { const n = t.toLowerCase().split(q).length - 1; if (n) hits.push({ id: SEC_IDS[k] || 'top', label: '~/' + k + (n > 1 ? '(' + n + ')' : '') }); });
     this.print([{ t: '$ grep -ril "' + term + '" ~', c: 'var(--color-accent-400)' }, { links: hits, t: hits.length ? '— ' + hits.length + ' file' + (hits.length > 1 ? 's' : '') : 'no matches', c: 'var(--color-accent-100)' }]);
+  }
+  nmap(raw) {
+    const tgt = raw.trim().split(/\s+/).slice(1).filter(a => a[0] !== '-')[0] || 'khiz3r.me', dim = 'var(--color-accent-400)', fg = 'var(--color-accent-100)';
+    if (!['khiz3r.me', 'localhost', '127.0.0.1'].includes(tgt.toLowerCase())) return this.print([{ t: '$ ' + raw, c: dim }, { t: 'nmap: ' + tgt + ' is out of scope — try nmap khiz3r.me', c: fg }]);
+    // 44px touch targets would stack 9 rows past the output box, so coarse pointers get the ports inline like grep
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const ports = coarse ? [{ links: PORTS.map(([p, id]) => ({ id, label: p + ' ' + id })), t: '', c: fg }]
+      : PORTS.map(([p, id]) => ({ links: [{ id, label: (p + '/tcp').padEnd(9) + 'open  ' + id }], t: '', c: fg }));
+    // the output box shows ~10 lines, so the fine-pointer list skips nmap's header lines
+    this.print([{ t: '$ ' + raw, c: dim }, ...(coarse ? [{ t: 'Nmap scan report for ' + tgt + ' — tap a port to jump', c: dim }] : []), ...ports]);
+  }
+  htop(raw) {
+    const bar = v => '[' + '|'.repeat(Math.round(v * 8)).padEnd(8) + ']';
+    const rows = PROCS.map((n, i) => ({ n, pid: 2077 + i, cpu: Math.random(), mem: Math.random() * 0.7 })).sort((a, b) => b.cpu - a.cpu);
+    this.print([{ t: '$ ' + raw, c: 'var(--color-accent-400)' }, { t: 'Tasks: ' + rows.length + ', 1 running · uptime 18 years', c: 'var(--color-accent-100)' }, { t: '  PID CPU        MEM        COMMAND', c: 'var(--color-accent-400)' },
+      ...rows.map((r, i) => ({ t: String(r.pid).padStart(5) + ' ' + bar(r.cpu) + ' ' + bar(r.mem) + ' ' + r.n, c: i ? 'var(--color-accent-100)' : 'var(--color-accent)' }))]);
   }
   inputRef = React.createRef(); mainRef = React.createRef(); headerRef = React.createRef(); marqRef = React.createRef(); heroRef = React.createRef(); ringRef = React.createRef();
   startMotion() {
@@ -928,6 +946,8 @@ class Component extends DCLogic {
     if (!c) return;
     this.hist.push(raw); this.hi = this.hist.length;
     if (c.startsWith('grep ')) { this.setState({ cmd: '' }); this.grep(raw.trim().slice(5).replace(/^-\w+\s+/, '').replace(/"/g, '')); return; }
+    if (c === 'nmap' || c.startsWith('nmap ')) { this.setState({ cmd: '' }); this.nmap(raw); return; }
+    if (c === 'htop' || c === 'top') { this.setState({ cmd: '' }); this.htop(raw); return; }
     const dm = c.match(/^(?:echo\s+(\S+)\s*\|\s*)?base64\s+-d\s*(\S*)$|^decode\s+(\S+)$/);
     if (dm) { let o; try { o = atob(raw.trim().match(/[A-Za-z0-9+\/=]{12,}/)[0]); } catch (err) { o = 'base64: invalid input'; } this.setState({ cmd: '' }); this.print([echo, res(o)]); return; }
     const fm = c.match(/^(?:submit\s+)?(flag\{.*\})$/);
@@ -1043,7 +1063,7 @@ class Component extends DCLogic {
         else if (e.key === 'ArrowDown') { e.preventDefault(); this.hi = Math.min(this.hist.length, this.hi + 1); this.setState({ cmd: this.hist[this.hi] || '' }); }
         else if (e.key === 'Tab' && !e.shiftKey) { // Shift+Tab still leaves the input (reaches grep result links)
           e.preventDefault();
-          const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'theme green', 'theme amber', 'theme white', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
+          const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'theme green', 'theme amber', 'theme white', 'grep ', 'nmap khiz3r.me', 'htop', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
           const m = all.filter(x => x.startsWith(s.cmd.toLowerCase()));
           if (m.length === 1) this.setState({ cmd: m[0] }); else if (m.length) this.print([{ t: m.join('  '), c: 'var(--color-neutral-700)' }]);
         }
