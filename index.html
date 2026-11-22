@@ -49,6 +49,8 @@ a:hover{color:var(--color-accent-100);border-bottom-color:var(--color-accent)}
 input::placeholder{color:var(--color-neutral-600)}
 html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 :focus-visible{outline:1px solid var(--color-accent);outline-offset:3px}
+.labsvg rect:focus-visible{outline:none;stroke:var(--color-accent-100);stroke-width:3}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}.rm-hide{display:none!important}}
 .labsvg{min-width:0}
 @media (min-width:1000px){.labfig{display:grid;grid-template-columns:minmax(0,3fr) minmax(220px,1fr);gap:28px;align-items:center}.labfig .labinfo{border-top:0!important;margin-top:0!important;padding:0 0 0 24px!important;border-left:1px solid var(--color-divider)}}
 @media (max-width:759px){.labsvg{min-width:640px}}
@@ -119,7 +121,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 
 <sc-if value="{{ scanlines }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.28) 2px 3px)"></div>
-  <div style="position:fixed;left:0;right:0;top:0;height:14vh;z-index:91;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--color-accent) 7%,transparent),transparent);animation:sweep 7s linear infinite"></div>
+  <div class="rm-hide" style="position:fixed;left:0;right:0;top:0;height:14vh;z-index:91;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--color-accent) 7%,transparent),transparent);animation:sweep 7s linear infinite"></div>
 </sc-if>
 
 <div ref="{{ crossRef }}" style="position:fixed;left:0;top:0;z-index:95;pointer-events:none;opacity:0;transition:opacity .3s;will-change:transform">
@@ -166,9 +168,9 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   <section ref="{{ heroRef }}" id="top" data-sec="hero" style="perspective:1200px;background:radial-gradient(560px circle at var(--mx,70%) var(--my,40%),color-mix(in srgb,var(--color-accent) 10%,transparent),transparent 70%);position:relative;z-index:0;padding:clamp(40px,8vw,96px) 0 clamp(48px,8vw,96px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:48px;align-items:end">
     <div>
       <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700);margin-bottom:18px;letter-spacing:.04em">[ PID 2077 ] · HOUSTON, TX · UP {{ uptime }}</div>
-      <h1 data-par="-0.07" onMouseEnter="{{ glitch }}" title="hover to re-decode" style="cursor:crosshair;font-size:clamp(72px,13vw,176px);line-height:.84;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 32px">
-        <span style="display:block">{{ name1 }}</span>
-        <span style="display:block;color:var(--color-accent)">{{ name2 }}</span>
+      <h1 data-par="-0.07" onMouseEnter="{{ glitch }}" title="hover to re-decode" aria-label="Khizar Ahmed" style="cursor:crosshair;font-size:clamp(72px,13vw,176px);line-height:.84;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 32px">
+        <span aria-hidden="true" style="display:block">{{ name1 }}</span>
+        <span aria-hidden="true" style="display:block;color:var(--color-accent)">{{ name2 }}</span>
       </h1>
       <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:var(--color-neutral-700);margin-bottom:10px;min-height:1.6em"><span style="color:var(--color-accent-700)">khizar@lab:~$ </span>{{ heroCmd }}</div>
       <p style="font-size:clamp(17px,1.6vw,20px);line-height:1.55;max-width:60ch;margin:0 0 28px;min-height:5.5em;text-wrap:pretty">{{ bio }}<span style="display:inline-block;width:.5em;height:1em;background:var(--color-accent);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite"></span></p>
@@ -209,7 +211,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.lab }}"></div>
     <div class="gut" style="position:static"><span class="n">01</span><span class="p">~/homelab</span><span>2022 – Present</span><span class="c">$ ssh root@lapprox.home.lab</span></div>
     <div style="min-width:0">
-    <h2 class="h-lg" style="margin-bottom:40px">{{ head.lab }}<span class="cur"></span></h2>
+    <h2 class="h-lg" style="margin-bottom:40px" aria-label="{{ title.lab }}"><span aria-hidden="true">{{ head.lab }}<span class="cur"></span></span></h2>
     </div>
     <div style="grid-column:1 / -1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);gap:40px;margin-top:16px;perspective:1400px">
       <figure data-tilt="0.5" class="blueprint labfig" style="margin:0;min-width:0;padding:16px;opacity:{{ rv.lab.o }};transform:{{ rv.lab.t }};transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)">
@@ -227,17 +229,17 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
             <path d="M415 220 H545 V112" stroke-dasharray="4 3"></path>
           </g>
           <g fill="none" stroke-width="1">
-            <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="72" width="190" height="40" fill="{{ lab.br0.f }}" stroke="{{ lab.br0.s }}" onMouseEnter="{{ lab.br0.on }}" onClick="{{ lab.br0.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="470" y="72" width="160" height="40" fill="{{ lab.siem.f }}" stroke="{{ lab.siem.s }}" onMouseEnter="{{ lab.siem.on }}" onClick="{{ lab.siem.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="72" width="170" height="40" fill="{{ lab.nix.f }}" stroke="{{ lab.nix.s }}" onMouseEnter="{{ lab.nix.on }}" onClick="{{ lab.nix.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="136" width="170" height="40" fill="{{ lab.vpn.f }}" stroke="{{ lab.vpn.s }}" onMouseEnter="{{ lab.vpn.on }}" onClick="{{ lab.vpn.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="136" width="190" height="40" fill="{{ lab.pf.f }}" stroke="{{ lab.pf.s }}" onMouseEnter="{{ lab.pf.on }}" onClick="{{ lab.pf.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="200" width="190" height="40" fill="{{ lab.br1.f }}" stroke="{{ lab.br1.s }}" onMouseEnter="{{ lab.br1.on }}" onClick="{{ lab.br1.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="282" width="140" height="76" fill="{{ lab.nat.f }}" stroke="{{ lab.nat.s }}" onMouseEnter="{{ lab.nat.on }}" onClick="{{ lab.nat.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="170" y="282" width="140" height="76" fill="{{ lab.v80.f }}" stroke="{{ lab.v80.s }}" onMouseEnter="{{ lab.v80.on }}" onClick="{{ lab.v80.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="330" y="282" width="140" height="76" fill="{{ lab.v666.f }}" stroke="{{ lab.v666.s }}" onMouseEnter="{{ lab.v666.on }}" onClick="{{ lab.v666.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="490" y="282" width="140" height="76" fill="{{ lab.v999.f }}" stroke="{{ lab.v999.s }}" onMouseEnter="{{ lab.v999.on }}" onClick="{{ lab.v999.on }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.on }}" onFocus="{{ lab.wan.on }}" onKeyDown="{{ lab.wan.key }}" tabindex="0" role="button" aria-label="{{ lab.wan.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="72" width="190" height="40" fill="{{ lab.br0.f }}" stroke="{{ lab.br0.s }}" onMouseEnter="{{ lab.br0.on }}" onClick="{{ lab.br0.on }}" onFocus="{{ lab.br0.on }}" onKeyDown="{{ lab.br0.key }}" tabindex="0" role="button" aria-label="{{ lab.br0.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="470" y="72" width="160" height="40" fill="{{ lab.siem.f }}" stroke="{{ lab.siem.s }}" onMouseEnter="{{ lab.siem.on }}" onClick="{{ lab.siem.on }}" onFocus="{{ lab.siem.on }}" onKeyDown="{{ lab.siem.key }}" tabindex="0" role="button" aria-label="{{ lab.siem.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="72" width="170" height="40" fill="{{ lab.nix.f }}" stroke="{{ lab.nix.s }}" onMouseEnter="{{ lab.nix.on }}" onClick="{{ lab.nix.on }}" onFocus="{{ lab.nix.on }}" onKeyDown="{{ lab.nix.key }}" tabindex="0" role="button" aria-label="{{ lab.nix.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="136" width="170" height="40" fill="{{ lab.vpn.f }}" stroke="{{ lab.vpn.s }}" onMouseEnter="{{ lab.vpn.on }}" onClick="{{ lab.vpn.on }}" onFocus="{{ lab.vpn.on }}" onKeyDown="{{ lab.vpn.key }}" tabindex="0" role="button" aria-label="{{ lab.vpn.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="136" width="190" height="40" fill="{{ lab.pf.f }}" stroke="{{ lab.pf.s }}" onMouseEnter="{{ lab.pf.on }}" onClick="{{ lab.pf.on }}" onFocus="{{ lab.pf.on }}" onKeyDown="{{ lab.pf.key }}" tabindex="0" role="button" aria-label="{{ lab.pf.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="200" width="190" height="40" fill="{{ lab.br1.f }}" stroke="{{ lab.br1.s }}" onMouseEnter="{{ lab.br1.on }}" onClick="{{ lab.br1.on }}" onFocus="{{ lab.br1.on }}" onKeyDown="{{ lab.br1.key }}" tabindex="0" role="button" aria-label="{{ lab.br1.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="282" width="140" height="76" fill="{{ lab.nat.f }}" stroke="{{ lab.nat.s }}" onMouseEnter="{{ lab.nat.on }}" onClick="{{ lab.nat.on }}" onFocus="{{ lab.nat.on }}" onKeyDown="{{ lab.nat.key }}" tabindex="0" role="button" aria-label="{{ lab.nat.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="170" y="282" width="140" height="76" fill="{{ lab.v80.f }}" stroke="{{ lab.v80.s }}" onMouseEnter="{{ lab.v80.on }}" onClick="{{ lab.v80.on }}" onFocus="{{ lab.v80.on }}" onKeyDown="{{ lab.v80.key }}" tabindex="0" role="button" aria-label="{{ lab.v80.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="330" y="282" width="140" height="76" fill="{{ lab.v666.f }}" stroke="{{ lab.v666.s }}" onMouseEnter="{{ lab.v666.on }}" onClick="{{ lab.v666.on }}" onFocus="{{ lab.v666.on }}" onKeyDown="{{ lab.v666.key }}" tabindex="0" role="button" aria-label="{{ lab.v666.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="490" y="282" width="140" height="76" fill="{{ lab.v999.f }}" stroke="{{ lab.v999.s }}" onMouseEnter="{{ lab.v999.on }}" onClick="{{ lab.v999.on }}" onFocus="{{ lab.v999.on }}" onKeyDown="{{ lab.v999.key }}" tabindex="0" role="button" aria-label="{{ lab.v999.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
           </g>
           <g font-size="12" fill="var(--color-text)" text-anchor="middle" pointer-events="none">
             <text x="320" y="33">home router · WAN</text>
@@ -260,7 +262,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
             <text x="442" y="86" font-size="9">SPAN</text>
             <text x="95" y="64" font-size="9">SELF-HOSTED · PROD</text>
           </g>
-          <g fill="var(--color-accent)">
+          <g fill="var(--color-accent)" class="rm-hide">
             <circle r="3.5" style="--x1:320px;--y1:48px;--x2:320px;--y2:72px;animation:pkt 1.6s linear 0s infinite"></circle>
             <circle r="3.5" style="--x1:320px;--y1:112px;--x2:320px;--y2:136px;animation:pkt 1.6s linear 0.5s infinite"></circle>
             <circle r="3.5" style="--x1:320px;--y1:176px;--x2:320px;--y2:200px;animation:pkt 1.6s linear 1s infinite"></circle>
@@ -272,12 +274,12 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
             <circle r="3.5" style="--x1:415px;--y1:92px;--x2:470px;--y2:92px;animation:pkt 1.4s linear 0.8s infinite"></circle>
             <circle r="3.5" style="--x1:180px;--y1:92px;--x2:225px;--y2:92px;animation:pkt 1.2s linear 1.5s infinite"></circle>
           </g>
-          <text x="10" y="392" font-size="10" fill="var(--color-neutral-600)">FIG. 02 — lapprox.home.lab · hover a node</text>
+          <text x="10" y="392" font-size="10" fill="var(--color-neutral-600)">FIG. 02 — lapprox.home.lab · hover or tap a node</text>
         </svg>
         </div>
         <div class="labinfo" style="border-top:1px solid var(--color-divider);margin-top:12px;padding-top:12px;min-height:5.2em">
           <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">$ ssh {{ labInfo.host }}<span style="display:inline-block;width:7px;height:13px;background:var(--color-accent);vertical-align:-2px;margin-left:4px;animation:blink 1s steps(1) infinite"></span></div>
-          <div style="font-size:15px;line-height:1.5;margin-top:4px;text-wrap:pretty">{{ labInfo.text }}</div>
+          <div aria-live="polite" style="font-size:15px;line-height:1.5;margin-top:4px;text-wrap:pretty">{{ labInfo.text }}</div>
         </div>
       </figure>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:0 48px;align-items:start">
@@ -298,10 +300,10 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="gut"><span class="n">02</span><span class="p">~/certs</span><span>11 issued · 2026 – 2023</span><span class="c">tty1 · /var/log/certs.log</span></div>
     <div style="min-width:0">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 24px;margin-bottom:24px">
-      <h2 class="h-md">{{ head.certs }}<span class="cur"></span></h2>
+      <h2 class="h-md" aria-label="{{ title.certs }}"><span aria-hidden="true">{{ head.certs }}<span class="cur"></span></span></h2>
       <div style="display:flex;flex-wrap:wrap;gap:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px">
         <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
-          <button onClick="{{ f.pick }}" style="all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--color-accent-800);background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+          <button onClick="{{ f.pick }}" aria-pressed="{{ f.on }}" style="all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--color-accent-800);background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
         </sc-for>
       </div>
     </div>
@@ -326,7 +328,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.projects }}"></div>
     <div class="gut"><span class="n">03</span><span class="p">~/src</span><span class="c">$ git log --author=khizar</span></div>
     <div style="min-width:0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px;margin-bottom:36px">
-      <h2 class="h-lg">{{ head.projects }}<span class="cur"></span></h2>
+      <h2 class="h-lg" aria-label="{{ title.projects }}"><span aria-hidden="true">{{ head.projects }}<span class="cur"></span></span></h2>
       <span class="deskhint">drag a title bar to move a window · double-click to reset</span>
     </div>
     <div class="desk">
@@ -353,7 +355,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
         <div class="wb" style="display:flex;flex-direction:column;gap:14px">
             <div style="position:relative;aspect-ratio:4/3;border:1px dashed var(--color-neutral-500);overflow:hidden;background:repeating-linear-gradient(0deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,color-mix(in srgb,var(--color-text) 6%,transparent) 39px 40px)">
               <sc-for list="{{ ripples }}" as="r" hint-placeholder-count="3">
-                <span style="position:absolute;left:50%;top:55%;width:140%;aspect-ratio:1;border:1px solid var(--color-accent);border-radius:50%;animation:ripple 3.6s cubic-bezier(.2,.6,.3,1) {{ r.d }} infinite"></span>
+                <span class="rm-hide" style="position:absolute;left:50%;top:55%;width:140%;aspect-ratio:1;border:1px solid var(--color-accent);border-radius:50%;animation:ripple 3.6s cubic-bezier(.2,.6,.3,1) {{ r.d }} infinite"></span>
               </sc-for>
               <span style="position:absolute;left:50%;top:55%;width:14px;height:14px;transform:translate(-50%,-50%) rotate(45deg);background:var(--color-accent);box-shadow:0 0 16px var(--color-accent)"></span>
               <span style="position:absolute;left:50%;top:55%;transform:translate(14px,8px);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--color-accent-700)">AP-01</span>
@@ -402,7 +404,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.skills }}"></div>
     <div class="gut"><span class="n">04</span><span class="p">~/skills</span><span class="c">$ lsmod · click a module to grep it</span></div>
     <div style="min-width:0">
-    <h2 class="h-md" style="margin-bottom:20px">{{ head.skills }}<span class="cur"></span></h2>
+    <h2 class="h-md" style="margin-bottom:20px" aria-label="{{ title.skills }}"><span aria-hidden="true">{{ head.skills }}<span class="cur"></span></span></h2>
     <div style="border-top:1px solid var(--color-divider)">
       <sc-for list="{{ skills }}" as="s" hint-placeholder-count="8">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 32px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--color-divider);opacity:{{ s.o }};transform:{{ s.t }};transition:opacity .5s ease {{ s.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ s.d }}">
@@ -425,7 +427,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.activity }}"></div>
     <div class="gut"><span class="n">05</span><span class="p">~/activity</span><span class="c">$ cat *.log</span></div>
     <div style="min-width:0">
-    <h2 class="h-md" style="margin-bottom:20px">{{ head.activity }}<span class="cur"></span></h2>
+    <h2 class="h-md" style="margin-bottom:20px" aria-label="{{ title.activity }}"><span aria-hidden="true">{{ head.activity }}<span class="cur"></span></span></h2>
     <sc-for list="{{ nclSeasons }}" as="n" hint-placeholder-count="2">
     <div class="row" style="border-top:{{ n.bt }};align-items:start;opacity:{{ rv.activity.o }};transform:{{ rv.activity.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">
       <div>
@@ -464,8 +466,8 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     </div>
     <div data-par="-0.12" data-par-max="24" style="position:relative;margin:40px 0 40px;font-family:var(--font-heading);font-weight:600;font-size:clamp(60px,19vw,300px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;color:var(--color-accent);text-shadow:0 0 40px color-mix(in srgb,var(--color-accent) 40%,transparent)">
       <span>{{ hackWord }}</span>
-      <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-accent-100);animation:glitchA 3.8s steps(1) infinite">{{ hackWord }}</span>
-      <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-neutral-600);animation:glitchB 5.1s steps(1) infinite">{{ hackWord }}</span>
+      <span aria-hidden="true" class="rm-hide" style="position:absolute;left:0;top:0;color:var(--color-accent-100);animation:glitchA 3.8s steps(1) infinite">{{ hackWord }}</span>
+      <span aria-hidden="true" class="rm-hide" style="position:absolute;left:0;top:0;color:var(--color-neutral-600);animation:glitchB 5.1s steps(1) infinite">{{ hackWord }}</span>
     </div>
     <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(26px,3.4vw,44px);line-height:1.05;text-transform:uppercase;margin:0 0 40px;max-width:22ch;opacity:{{ rv.hackhcc.o }};transform:{{ rv.hackhcc.t }};transition:opacity .6s ease .3s,transform .7s cubic-bezier(.2,.7,.2,1) .3s">The first ever hackathon for Houston City College.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:28px 56px;align-items:start">
@@ -494,7 +496,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.volunteer }}"></div>
     <div class="gut"><span class="n">07</span><span class="p">~/volunteer</span><span class="c">$ history | grep -i role</span></div>
     <div style="min-width:0">
-    <h2 class="h-md" style="margin-bottom:8px">{{ head.volunteer }}<span class="cur"></span></h2>
+    <h2 class="h-md" style="margin-bottom:8px" aria-label="{{ title.volunteer }}"><span aria-hidden="true">{{ head.volunteer }}<span class="cur"></span></span></h2>
     <sc-for list="{{ vol }}" as="v" hint-placeholder-count="2">
       <div class="row" style="opacity:{{ v.o }};transform:{{ v.t }};transition:opacity .5s ease {{ v.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ v.d }}">
         <div>
@@ -514,7 +516,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.edu }}"></div>
     <div class="gut"><span class="n">08</span><span class="p">~/edu</span><span class="c">$ git log --oneline</span></div>
     <div style="min-width:0">
-    <h2 class="h-md" style="margin-bottom:8px">{{ head.edu }}<span class="cur"></span></h2>
+    <h2 class="h-md" style="margin-bottom:8px" aria-label="{{ title.edu }}"><span aria-hidden="true">{{ head.edu }}<span class="cur"></span></span></h2>
     <sc-for list="{{ edu }}" as="e" hint-placeholder-count="2">
       <div style="display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--color-divider);opacity:{{ e.o }};transform:{{ e.t }};transition:opacity .5s ease {{ e.d }},transform .6s cubic-bezier(.2,.7,.2,1) {{ e.d }}">
         <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--color-accent-700)">{{ e.hash }}</span>
@@ -529,7 +531,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
     <div class="sweep" style="transform:{{ bars.contact }}"></div>
     <div class="gut"><span class="n">09</span><span class="p">~/contact</span></div>
     <div style="min-width:0">
-    <h2 class="h-md" style="margin-bottom:28px">{{ head.contact }}<span class="cur"></span></h2>
+    <h2 class="h-md" style="margin-bottom:28px" aria-label="{{ title.contact }}"><span aria-hidden="true">{{ head.contact }}<span class="cur"></span></span></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start;perspective:1400px">
       <p style="font-family:var(--font-heading);font-weight:600;font-size:clamp(28px,3.4vw,40px);line-height:1.1;text-transform:uppercase;margin:0;text-wrap:pretty;opacity:{{ rv.contact.o }};transform:{{ rv.contact.t }};transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1)">Seeking an internship or entry-level role in IT support, systems administration or security operations.</p>
       <div data-tilt="0.7" class="blueprint" style="padding:22px 24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px">
@@ -554,7 +556,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 
 <div style="position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--color-accent-900);color:var(--color-accent-100);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;border-top:1px solid var(--color-accent-700)">
   <div style="max-width:1240px;margin:0 auto;padding:10px clamp(16px,4vw,40px) 12px">
-    <div style="display:flex;flex-direction:column;justify-content:flex-end;gap:2px;margin-bottom:6px;height:{{ outH }};overflow:hidden;transition:height .45s cubic-bezier(.2,.7,.2,1)">
+    <div aria-live="polite" style="display:flex;flex-direction:column;justify-content:flex-end;gap:2px;margin-bottom:6px;height:{{ outH }};overflow:hidden;transition:height .45s cubic-bezier(.2,.7,.2,1)">
       <sc-for list="{{ out }}" as="o">
         <div style="white-space:pre-wrap;color:{{ o.c }}">{{ o.t }}</div>
       </sc-for>
@@ -679,6 +681,7 @@ const LABNODES = {
   v666: ['vlan666.untrusted', 'Untrusted targets that still need internet access, such as the OWASP Juice Shop container.'],
   v999: ['vlan999.isolated', 'Isolated targets reachable only from Kali: Vulnhub and HackMyVM boxes.'],
 };
+const LABNAMES = { wan: 'home router · WAN', br0: 'vmbr0 · OVS bridge', siem: 'Wazuh SIEM + NIDS', nix: 'NixOS · Portainer', vpn: 'WireGuard · OpenVPN', pf: 'pfSense VM', br1: 'vmbr1 · VLAN trunk', nat: 'NATIVE · Kali Linux', v80: 'VLAN 80 · Active Directory lab', v666: 'VLAN 666 · untrusted · internet', v999: 'VLAN 999 · isolated · Kali only' };
 const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · flag · boot · clear · keys 0–9 jump';
 
 class Component extends DCLogic {
@@ -793,8 +796,11 @@ class Component extends DCLogic {
     if (this.props.skipBoot || booted) this.setState({ phase: 'gone', seen: { hero: true } });
     else this.startBoot();
     this.tickI = setInterval(() => this.tick(), 28);
-    this.startRain(); this.startCross(); this.startMotion();
-    this.moonI = setInterval(() => { if (this.state.seen.projects) this.setState(s => ({ moonT: s.moonT + 1 })); }, 90);
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!still) this.startRain();
+    this.startCross(); this.startMotion();
+    if (still) this.setState({ moonT: 39 }); // all instruments located, static temp
+    else this.moonI = setInterval(() => { if (this.state.seen.projects) this.setState(s => ({ moonT: s.moonT + 1 })); }, 90);
     this.onClickBurst = e => { if (e.target.closest && e.target.closest('input')) return; this.burst(e.clientX, e.clientY); };
     addEventListener('click', this.onClickBurst);
     this.onWide = () => { const w = innerWidth >= 760, xl = innerWidth >= 1100; if (w !== this.state.wide || xl !== this.state.xl) this.setState({ wide: w, xl }); };
@@ -956,10 +962,10 @@ class Component extends DCLogic {
       bars: Object.fromEntries(Object.keys(SEC_IDS).map(k => [k, seen[k] ? 'scaleX(1)' : 'scaleX(0)'])),
       mainRef: this.mainRef, headerRef: this.headerRef, marqRef: this.marqRef, heroRef: this.heroRef, ringRef: this.ringRef,
       goTop: () => this.go('top'), goContact: () => this.go('contact'),
-      rv, head,
+      rv, head, title: TITLES,
       sysinfo: SYSINFO.map(([k, v], i) => ({ k, v, ...rvi('hero', i + 4, 90) })),
       certBlocks: CERTS.map((_, i) => ({ o: seen.hero ? 1 : 0.12, d: (800 + i * 90) + 'ms' })),
-      filters: flt.map(([k, label]) => ({ label, pick: () => this.setState({ filter: k }), bg: s.filter === k ? 'var(--color-accent)' : 'transparent', fg: s.filter === k ? 'var(--color-bg)' : 'var(--color-text)' })),
+      filters: flt.map(([k, label]) => ({ label, pick: () => this.setState({ filter: k }), on: String(s.filter === k), bg: s.filter === k ? 'var(--color-accent)' : 'transparent', fg: s.filter === k ? 'var(--color-bg)' : 'var(--color-text)' })),
       filterFlag: s.filter === 'all' ? '' : '--vendor=' + s.filter,
       certCount: certs.length,
       certRows: certs.map((c, i) => ({ ...c, ...rvi('certs', i + 2, 130) })),
@@ -1014,7 +1020,7 @@ class Component extends DCLogic {
       },
       onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
       outH: s.focused ? '232px' : '62px',
-      lab: Object.fromEntries(Object.keys(LABNODES).map(k => [k, { f: s.labSel === k ? 'var(--color-accent-800)' : 'transparent', s: s.labSel === k ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }) }])),
+      lab: Object.fromEntries(Object.keys(LABNODES).map(k => [k, { f: s.labSel === k ? 'var(--color-accent-800)' : 'transparent', s: s.labSel === k ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }), label: LABNAMES[k], key: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ labSel: k }); } } }])),
       labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
       quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'github', run: mk('github') }],
     };
