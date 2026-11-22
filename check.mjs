@@ -18,6 +18,8 @@ assert(plain.split('\n').every(l => l.length <= 80), 'line over 80 cols');
 const html = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
 for (const line of plain.split('\n')) for (const s of line.trim().replace(/^(- |## |\$ )/, '').split(/ {2,}/))
   assert(html.includes(s) || s === 'khiz3r.me/resume.pdf', 'not verbatim in index.html: ' + s);
-assert.equal(await (await get('/', 'Mozilla/5.0 (X11; Linux x86_64) Chrome/130')).text(), '<html>site</html>');
+const br = await get('/', 'Mozilla/5.0 (X11; Linux x86_64) Chrome/130');
+assert.match(br.headers.get('vary') || '', /User-Agent/);
+assert.equal(await br.text(), '<html>site</html>');
 assert.equal(await (await get('/resume.pdf', 'curl/8.5.0')).text(), '<html>site</html>');
 console.log('ok');

@@ -47,9 +47,15 @@ function render(color) {
 const CLI = /^(curl|wget2?|httpie|xh|libfetch)\//i;
 
 export default {
-  fetch(request, env) {
+  async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname !== '/' || !CLI.test(request.headers.get('user-agent') || '')) return env.ASSETS.fetch(request);
+    if (url.pathname !== '/') return env.ASSETS.fetch(request);
+    if (!CLI.test(request.headers.get('user-agent') || '')) {
+      // `/` has two bodies depending on UA, so caches must key on it
+      const r = await env.ASSETS.fetch(request), res = new Response(r.body, r);
+      res.headers.append('Vary', 'User-Agent');
+      return res;
+    }
     return new Response(render(!url.searchParams.has('plain')), {
       headers: { 'content-type': 'text/plain; charset=utf-8', vary: 'User-Agent' },
     });
