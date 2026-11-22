@@ -13,3 +13,6 @@ CLAUDE.md
 .claude
 README.md
 LICENSE
+worker.js
+check.mjs
+.wrangler

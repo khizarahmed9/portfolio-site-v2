@@ -1,8 +1,12 @@
 {
   "name": "portfoliosite",
   "compatibility_date": "2026-09-30",
+  "main": "worker.js",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    // only `/` hits the worker first (curl text view); every other path is served straight from assets
+    "run_worker_first": ["/"]
   },
   "observability": {
     "logs": {
