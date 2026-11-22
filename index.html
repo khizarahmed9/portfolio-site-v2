@@ -459,7 +459,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
       <span style="color:var(--color-accent-700)"><b style="font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:.9;color:var(--color-accent);vertical-align:-6px;margin-right:12px">06</b>~/hackhcc · organizer</span>
       <span style="display:flex;align-items:center;gap:8px;color:var(--color-neutral-700)"><span style="flex:none;width:8px;height:8px;background:var(--color-accent);animation:pulse 1.4s ease-in-out infinite"></span>Chief Technology Officer · Computer Science Association · 2025 – Present</span>
     </div>
-    <div data-par="-0.12" style="position:relative;margin:24px 0 8px;font-family:var(--font-heading);font-weight:600;font-size:clamp(60px,19vw,300px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;color:var(--color-accent);text-shadow:0 0 40px color-mix(in srgb,var(--color-accent) 40%,transparent)">
+    <div data-par="-0.12" data-par-max="24" style="position:relative;margin:40px 0 40px;font-family:var(--font-heading);font-weight:600;font-size:clamp(60px,19vw,300px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;color:var(--color-accent);text-shadow:0 0 40px color-mix(in srgb,var(--color-accent) 40%,transparent)">
       <span>{{ hackWord }}</span>
       <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-accent-100);animation:glitchA 3.8s steps(1) infinite">{{ hackWord }}</span>
       <span aria-hidden="true" style="position:absolute;left:0;top:0;color:var(--color-neutral-500);animation:glitchB 5.1s steps(1) infinite">{{ hackWord }}</span>
@@ -741,7 +741,7 @@ class Component extends DCLogic {
       const hd = this.headerRef.current;
       if (hd) { const hide = y > 240 && vel > 1.5 ? true : (vel < -1.5 || y < 240 ? false : hidden); if (hide !== hidden) { hidden = hide; hd.style.transform = hide ? 'translateY(-100%)' : ''; } }
       const mq = this.marqRef.current; if (mq && mq.getAnimations) { const a = mq.getAnimations()[0]; if (a) { const sp = 1 + Math.min(10, Math.abs(vel) * .35); a.playbackRate = vel < -0.5 ? -sp : sp; } }
-      if (!reduced) document.querySelectorAll('[data-par]').forEach(el => { const r = el.getBoundingClientRect(); el.style.translate = '0 ' + ((r.top + r.height / 2 - innerHeight / 2) * parseFloat(el.dataset.par)).toFixed(1) + 'px'; });
+      if (!reduced) document.querySelectorAll('[data-par]').forEach(el => { const r = el.getBoundingClientRect(); const m = +el.dataset.parMax || Infinity; el.style.translate = '0 ' + Math.max(-m, Math.min(m, (r.top + r.height / 2 - innerHeight / 2) * parseFloat(el.dataset.par))).toFixed(1) + 'px'; });
       tilts.forEach((v, el) => { v.x = lerp(v.x, v.tx, .12); v.y = lerp(v.y, v.ty, .12); const m = Math.hypot(v.x, v.y); if (m < .001 && !v.tx && !v.ty) { el.style.rotate = ''; tilts.delete(el); return; } el.style.rotate = (-v.y).toFixed(4) + ' ' + v.x.toFixed(4) + ' 0 ' + (m * 14).toFixed(2) + 'deg'; });
       mags.forEach((v, b) => { v.x = lerp(v.x, v.tx, .18); v.y = lerp(v.y, v.ty, .18); b.style.translate = Math.abs(v.x) + Math.abs(v.y) < .05 ? '' : v.x.toFixed(2) + 'px ' + v.y.toFixed(2) + 'px'; });
       if (fine) { cur.x = lerp(cur.x, mouse.x, .24); cur.y = lerp(cur.y, mouse.y, .24); const c = this.crossRef.current; if (c) c.style.transform = 'translate(' + cur.x.toFixed(1) + 'px,' + cur.y.toFixed(1) + 'px)'; }
