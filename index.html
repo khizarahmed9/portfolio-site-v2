@@ -264,17 +264,17 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
           <polyline ref="{{ trLine }}" fill="none" stroke="var(--color-accent)" stroke-width="2.5" pointer-events="none"></polyline>
           <circle ref="{{ trPkt }}" r="5" fill="var(--color-accent)" opacity="0" pointer-events="none"></circle>
           <g fill="none" stroke-width="1">
-            <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.on }}" onFocus="{{ lab.wan.on }}" onKeyDown="{{ lab.wan.key }}" tabindex="0" role="button" aria-label="{{ lab.wan.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="72" width="190" height="40" fill="{{ lab.br0.f }}" stroke="{{ lab.br0.s }}" onMouseEnter="{{ lab.br0.on }}" onClick="{{ lab.br0.on }}" onFocus="{{ lab.br0.on }}" onKeyDown="{{ lab.br0.key }}" tabindex="0" role="button" aria-label="{{ lab.br0.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="470" y="72" width="160" height="40" fill="{{ lab.siem.f }}" stroke="{{ lab.siem.s }}" onMouseEnter="{{ lab.siem.on }}" onClick="{{ lab.siem.on }}" onFocus="{{ lab.siem.on }}" onKeyDown="{{ lab.siem.key }}" tabindex="0" role="button" aria-label="{{ lab.siem.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="72" width="170" height="40" fill="{{ lab.nix.f }}" stroke="{{ lab.nix.s }}" onMouseEnter="{{ lab.nix.on }}" onClick="{{ lab.nix.on }}" onFocus="{{ lab.nix.on }}" onKeyDown="{{ lab.nix.key }}" tabindex="0" role="button" aria-label="{{ lab.nix.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="136" width="170" height="40" fill="{{ lab.vpn.f }}" stroke="{{ lab.vpn.s }}" onMouseEnter="{{ lab.vpn.on }}" onClick="{{ lab.vpn.on }}" onFocus="{{ lab.vpn.on }}" onKeyDown="{{ lab.vpn.key }}" tabindex="0" role="button" aria-label="{{ lab.vpn.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="136" width="190" height="40" fill="{{ lab.pf.f }}" stroke="{{ lab.pf.s }}" onMouseEnter="{{ lab.pf.on }}" onClick="{{ lab.pf.on }}" onFocus="{{ lab.pf.on }}" onKeyDown="{{ lab.pf.key }}" tabindex="0" role="button" aria-label="{{ lab.pf.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="225" y="200" width="190" height="40" fill="{{ lab.br1.f }}" stroke="{{ lab.br1.s }}" onMouseEnter="{{ lab.br1.on }}" onClick="{{ lab.br1.on }}" onFocus="{{ lab.br1.on }}" onKeyDown="{{ lab.br1.key }}" tabindex="0" role="button" aria-label="{{ lab.br1.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="10" y="282" width="140" height="76" fill="{{ lab.nat.f }}" stroke="{{ lab.nat.s }}" onMouseEnter="{{ lab.nat.on }}" onClick="{{ lab.nat.on }}" onFocus="{{ lab.nat.on }}" onKeyDown="{{ lab.nat.key }}" tabindex="0" role="button" aria-label="{{ lab.nat.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="170" y="282" width="140" height="76" fill="{{ lab.v80.f }}" stroke="{{ lab.v80.s }}" onMouseEnter="{{ lab.v80.on }}" onClick="{{ lab.v80.on }}" onFocus="{{ lab.v80.on }}" onKeyDown="{{ lab.v80.key }}" tabindex="0" role="button" aria-label="{{ lab.v80.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="330" y="282" width="140" height="76" fill="{{ lab.v666.f }}" stroke="{{ lab.v666.s }}" onMouseEnter="{{ lab.v666.on }}" onClick="{{ lab.v666.on }}" onFocus="{{ lab.v666.on }}" onKeyDown="{{ lab.v666.key }}" tabindex="0" role="button" aria-label="{{ lab.v666.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
-            <rect x="490" y="282" width="140" height="76" fill="{{ lab.v999.f }}" stroke="{{ lab.v999.s }}" onMouseEnter="{{ lab.v999.on }}" onClick="{{ lab.v999.on }}" onFocus="{{ lab.v999.on }}" onKeyDown="{{ lab.v999.key }}" tabindex="0" role="button" aria-label="{{ lab.v999.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.pick }}" onFocus="{{ lab.wan.on }}" onKeyDown="{{ lab.wan.key }}" tabindex="0" role="button" aria-label="{{ lab.wan.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="72" width="190" height="40" fill="{{ lab.br0.f }}" stroke="{{ lab.br0.s }}" onMouseEnter="{{ lab.br0.on }}" onClick="{{ lab.br0.pick }}" onFocus="{{ lab.br0.on }}" onKeyDown="{{ lab.br0.key }}" tabindex="0" role="button" aria-label="{{ lab.br0.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="470" y="72" width="160" height="40" fill="{{ lab.siem.f }}" stroke="{{ lab.siem.s }}" onMouseEnter="{{ lab.siem.on }}" onClick="{{ lab.siem.pick }}" onFocus="{{ lab.siem.on }}" onKeyDown="{{ lab.siem.key }}" tabindex="0" role="button" aria-label="{{ lab.siem.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="72" width="170" height="40" fill="{{ lab.nix.f }}" stroke="{{ lab.nix.s }}" onMouseEnter="{{ lab.nix.on }}" onClick="{{ lab.nix.pick }}" onFocus="{{ lab.nix.on }}" onKeyDown="{{ lab.nix.key }}" tabindex="0" role="button" aria-label="{{ lab.nix.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="136" width="170" height="40" fill="{{ lab.vpn.f }}" stroke="{{ lab.vpn.s }}" onMouseEnter="{{ lab.vpn.on }}" onClick="{{ lab.vpn.pick }}" onFocus="{{ lab.vpn.on }}" onKeyDown="{{ lab.vpn.key }}" tabindex="0" role="button" aria-label="{{ lab.vpn.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="136" width="190" height="40" fill="{{ lab.pf.f }}" stroke="{{ lab.pf.s }}" onMouseEnter="{{ lab.pf.on }}" onClick="{{ lab.pf.pick }}" onFocus="{{ lab.pf.on }}" onKeyDown="{{ lab.pf.key }}" tabindex="0" role="button" aria-label="{{ lab.pf.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="225" y="200" width="190" height="40" fill="{{ lab.br1.f }}" stroke="{{ lab.br1.s }}" onMouseEnter="{{ lab.br1.on }}" onClick="{{ lab.br1.pick }}" onFocus="{{ lab.br1.on }}" onKeyDown="{{ lab.br1.key }}" tabindex="0" role="button" aria-label="{{ lab.br1.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="10" y="282" width="140" height="76" fill="{{ lab.nat.f }}" stroke="{{ lab.nat.s }}" onMouseEnter="{{ lab.nat.on }}" onClick="{{ lab.nat.pick }}" onFocus="{{ lab.nat.on }}" onKeyDown="{{ lab.nat.key }}" tabindex="0" role="button" aria-label="{{ lab.nat.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="170" y="282" width="140" height="76" fill="{{ lab.v80.f }}" stroke="{{ lab.v80.s }}" onMouseEnter="{{ lab.v80.on }}" onClick="{{ lab.v80.pick }}" onFocus="{{ lab.v80.on }}" onKeyDown="{{ lab.v80.key }}" tabindex="0" role="button" aria-label="{{ lab.v80.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="330" y="282" width="140" height="76" fill="{{ lab.v666.f }}" stroke="{{ lab.v666.s }}" onMouseEnter="{{ lab.v666.on }}" onClick="{{ lab.v666.pick }}" onFocus="{{ lab.v666.on }}" onKeyDown="{{ lab.v666.key }}" tabindex="0" role="button" aria-label="{{ lab.v666.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
+            <rect x="490" y="282" width="140" height="76" fill="{{ lab.v999.f }}" stroke="{{ lab.v999.s }}" onMouseEnter="{{ lab.v999.on }}" onClick="{{ lab.v999.pick }}" onFocus="{{ lab.v999.on }}" onKeyDown="{{ lab.v999.key }}" tabindex="0" role="button" aria-label="{{ lab.v999.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
           </g>
           <g font-size="12" fill="var(--color-text)" text-anchor="middle" pointer-events="none">
             <text x="320" y="33">home router · WAN</text>
@@ -972,7 +972,7 @@ class Component extends DCLogic {
     }
     if (c === 'flag' || c === 'flag.txt') { this.setState({ cmd: '' }); this.print([echo, res('a flag is hidden on this page. decode what you find, then submit it.')]); return; }
     if (c === 'traceroute' || c.startsWith('traceroute ')) { this.setState({ cmd: '' }); this.traceroute(c.slice(11).trim(), echo); return; }
-    if (c === 'clear') { this.setState({ out: [], cmd: '' }); return; }
+    if (c === 'clear') { this.untrace(); this.setState({ out: [], cmd: '', tr: null }); return; }
     let r;
     if (c === 'help') r = HELP;
     else if (c === 'whoami') r = 'khizar ahmed, 18 — Information Systems student, Houston, TX';
@@ -996,7 +996,7 @@ class Component extends DCLogic {
     this.print([echo, res(r)]);
   }
   traceroute(q, echo) {
-    const k = TR_ALIAS[q] || (LABNODES[q] ? q : Object.keys(LABNODES).find(n => LABNODES[n][0] === q));
+    const k = Object.hasOwn(TR_ALIAS, q) ? TR_ALIAS[q] : Object.hasOwn(LABNODES, q) ? q : Object.keys(LABNODES).find(n => LABNODES[n][0] === q);
     const line = (t, c = 'var(--color-accent-100)') => ({ t, c });
     if (!k) { this.print([echo, line('usage: traceroute <node> — ' + Object.keys(TR_ALIAS).join(' · '))]); return; }
     const hops = TR_HOPS(k), ms = i => [0, 1, 2].map(() => (0.3 + i * 0.4 + Math.random() * 0.35).toFixed(3) + ' ms').join('  ');
@@ -1029,6 +1029,7 @@ class Component extends DCLogic {
     this.trT = setTimeout(() => { this.trRaf = requestAnimationFrame(step); }, 700); // let the smooth scroll land first
   }
   trPkt = React.createRef(); trLine = React.createRef();
+  untrace() { cancelAnimationFrame(this.trRaf); clearTimeout(this.trT); this.trLine.current?.setAttribute('points', ''); this.trPkt.current?.setAttribute('opacity', 0); }
   renderVals() {
     const s = this.state, seen = s.seen;
     const rvi = (k, i, step = 70) => seen[k] ? { o: 1, t: 'none', d: (i * step) + 'ms' } : { o: 0, t: 'translateY(18px)', d: '0ms' };
@@ -1118,7 +1119,7 @@ class Component extends DCLogic {
         else if (e.key === 'Escape') this.inputRef.current && this.inputRef.current.blur();
       },
       onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
-      lab: Object.fromEntries(Object.keys(LABNODES).map(k => { const hot = s.labSel === k || (s.tr && s.tr.hops.slice(0, s.tr.lit).includes(k)); return [k, { f: hot ? 'var(--color-accent-800)' : 'transparent', s: hot ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }), label: LABNAMES[k], key: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ labSel: k }); } } }]; })),
+      lab: Object.fromEntries(Object.keys(LABNODES).map(k => { const hot = s.labSel === k || (s.tr && s.tr.hops.slice(0, s.tr.lit).includes(k)); return [k, { f: hot ? 'var(--color-accent-800)' : 'transparent', s: hot ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }), label: LABNAMES[k], pick: () => { this.untrace(); this.setState({ labSel: k, tr: null }); }, key: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.untrace(); this.setState({ labSel: k, tr: null }); } } }]; })),
       trPkt: this.trPkt, trLine: this.trLine,
       outH: s.focused ? '232px' : s.wide ? '62px' : '0px',
       labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
