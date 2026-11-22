@@ -116,6 +116,26 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 }
 /* touch: 44px tap targets; !important beats the inline all:unset styles */
 @media (pointer:coarse){header button,header nav a,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,header nav a,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}.glink{display:inline-flex!important;align-items:center;min-height:44px!important}}
+/* print: black-on-white resume for every theme; the beforeprint handler finishes typing and reveals */
+@media print{
+  @page{margin:14mm}
+  :root,:root[data-theme]{--color-bg:#fff;--color-surface:#fff;--color-text:#000;--color-accent:#000;--color-accent-2:#000;--color-divider:#bbb;--color-accent-100:#000;--color-accent-200:#000;--color-accent-300:#000;--color-accent-400:#000;--color-accent-500:#000;--color-accent-600:#000;--color-accent-700:#000;--color-accent-800:#ccc;--color-accent-900:#fff;
+    --color-neutral-100:#fff;--color-neutral-200:#eee;--color-neutral-300:#ddd;--color-neutral-400:#999;--color-neutral-500:#777;--color-neutral-600:#555;--color-neutral-700:#444;--color-neutral-800:#222;--color-neutral-900:#111}
+  *,*::before,*::after{animation:none!important;transition:none!important;text-shadow:none!important;box-shadow:none!important}
+  [style*="position: fixed"],header,canvas,main>div:has(>[style*="marquee"]),.deskhint,.cur,[style*="blink"],.sweep,main button.btn,button[aria-pressed],.rm-hide{display:none!important}
+  main,[data-tilt],[data-par],[data-win]{transform:none!important;translate:none!important}
+  main{padding-bottom:0!important}
+  #top,.band,.desk{background:none!important}
+  .gut{position:static}
+  .desk{display:block;padding:0;border:0}
+  .win{margin:0 0 16px!important}
+  /* stack these two-column grids: Chrome moves a whole grid row to the next page instead of splitting it */
+  #hackhcc>div[style*="grid"],#contact [style*="perspective"]{display:block!important}
+  #contact .blueprint{margin-top:24px}
+  h2{break-after:avoid}
+  .row,.ln,.blueprint,#hackhcc>div>div,#contact p{break-inside:avoid}
+  main a[href^="http"]:not(#contact a)::after{content:" (" attr(href) ")";font-size:.8em;overflow-wrap:anywhere}
+}
 </style>
 </helmet>
 
@@ -854,6 +874,9 @@ class Component extends DCLogic {
     };
     this.onWinDbl = e => { const bar = e.target.closest && e.target.closest('[data-drag]'); if (bar) bar.closest('[data-win]').style.translate = ''; };
     addEventListener('pointerdown', this.onWinDown); addEventListener('dblclick', this.onWinDbl);
+    // print: show everything in its final state; flushSync so it renders before the print snapshot
+    this.onPrint = () => ReactDOM.flushSync(() => this.setState({ phase: 'gone', nameP: NAME.length, heroN: HERO_CMD.length, bioN: BIO.length, filter: 'all', seen: Object.fromEntries(['hero', ...Object.values(SEC_IDS)].map(k => [k, true])), typed: Object.fromEntries(Object.keys(TITLES).map(k => [k, TITLES[k].length])), nclP: 1, hackP: HACK.length, hackN: HACKLOG.length, cloneN: CLONE.length, moonT: 39 }));
+    addEventListener('beforeprint', this.onPrint);
     this.io = new IntersectionObserver(es => {
       const add = {};
       es.forEach(en => { if (en.isIntersecting) add[en.target.dataset.sec] = true; });
@@ -867,7 +890,7 @@ class Component extends DCLogic {
     this.io && this.io.disconnect();
     cancelAnimationFrame(this.rainRaf); removeEventListener('resize', this.onWide); cancelAnimationFrame(this.motionRaf); removeEventListener('click', this.onClickBurst); clearInterval(this.moonI); removeEventListener('mousemove', this.onMotionMove); removeEventListener('resize', this.onResize);
     removeEventListener('mousemove', this.onMove); document.removeEventListener('mouseleave', this.onLeave);
-    removeEventListener('pointerdown', this.onWinDown); removeEventListener('dblclick', this.onWinDbl);
+    removeEventListener('pointerdown', this.onWinDown); removeEventListener('dblclick', this.onWinDbl); removeEventListener('beforeprint', this.onPrint);
   }
   speed() { return Math.max(0.25, this.props.typeSpeed ?? 1); }
   startBoot() {
