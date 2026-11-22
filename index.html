@@ -117,6 +117,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 /* touch: 44px tap targets; !important beats the inline all:unset styles */
 @media (pointer:coarse){header button,header nav a,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,header nav a,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}.glink{display:inline-flex!important;align-items:center;min-height:44px!important}}
 /* print: black-on-white resume for every theme; the beforeprint handler finishes typing and reveals */
+/* shortcut: some print rules match inline style text (marquee, blink, grid, perspective); move those to classes if the inline styles get refactored */
 @media print{
   @page{margin:14mm}
   :root,:root[data-theme]{--color-bg:#fff;--color-surface:#fff;--color-text:#000;--color-accent:#000;--color-accent-2:#000;--color-divider:#bbb;--color-accent-100:#000;--color-accent-200:#000;--color-accent-300:#000;--color-accent-400:#000;--color-accent-500:#000;--color-accent-600:#000;--color-accent-700:#000;--color-accent-800:#ccc;--color-accent-900:#fff;
