@@ -174,6 +174,8 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
       <div style="display:flex;flex-wrap:wrap;gap:16px;opacity:{{ rv.hero.o }};transform:{{ rv.hero.t }};transition:opacity .6s ease .2s,transform .7s cubic-bezier(.2,.7,.2,1) .2s">
         <a class="btn btn-primary blueprint" href="resume.pdf" target="_blank" style="border-bottom:none;white-space:nowrap;flex:none">./resume.pdf<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
         <button class="btn btn-secondary" onClick="{{ goContact }}">$ contact --now</button>
+        <a class="btn btn-secondary" href="https://linkedin.com/in/khizar-ahmed9" target="_blank" style="border-bottom:none;white-space:nowrap">LinkedIn ↗</a>
+        <a class="btn btn-secondary" href="https://github.com/khizarahmed9" target="_blank" style="border-bottom:none;white-space:nowrap">GitHub ↗</a>
       </div>
     </div>
 
@@ -625,6 +627,7 @@ const CONTACTS = [
   { k: 'email', v: 'website@khiz3r.me', href: 'mailto:website@khiz3r.me' },
   { k: 'linkedin', v: 'linkedin.com/in/khizar-ahmed9', href: 'https://linkedin.com/in/khizar-ahmed9' },
   { k: 'github', v: 'github.com/khizarahmed9', href: 'https://github.com/khizarahmed9' },
+  { k: 'resume', v: './resume.pdf', href: 'resume.pdf' },
 ];
 const SYSINFO = [
   ['user', 'khizar ahmed'], ['host', 'houston.tx'], ['uptime', '18 years'], ['role', 'Information Systems student · HCC'], ['certs', '11 · CCNA, CySA+, Sec+, Net+, A+'],
@@ -675,7 +678,7 @@ const LABNODES = {
   v666: ['vlan666.untrusted', 'Untrusted targets that still need internet access, such as the OWASP Juice Shop container.'],
   v999: ['vlan999.isolated', 'Isolated targets reachable only from Kali: Vulnhub and HackMyVM boxes.'],
 };
-const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · grep <term> · flag · boot · clear · keys 0–9 jump';
+const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · flag · boot · clear · keys 0–9 jump';
 
 class Component extends DCLogic {
   state = { bootN: 0, phase: 'run', nameP: 0, heroN: 0, bioN: 0, seen: {}, typed: {}, filter: 'all', cmd: '', out: [{ t: 'portfolio shell ready — ' + HELP, c: 'var(--color-accent-300)' }], now: new Date(), t0: Date.now(), scroll: 0, moonT: 0, focused: false, labSel: 'pf', active: 'top', xl: false, navScr: null, wide: typeof innerWidth === 'undefined' ? true : innerWidth >= 760, nclP: 0, hackP: 0, hackN: 0 };
@@ -900,7 +903,7 @@ class Component extends DCLogic {
     const fm = c.match(/^(?:submit\s+)?(flag\{.*\})$/);
     if (fm) {
       this.setState({ cmd: '' });
-      if (fm[1] === FLAG) { this.burst(innerWidth / 2, innerHeight / 2, 90, 420); this.print([echo, { t: '[ OK ] flag accepted. nice work — now go say hi: website@khiz3r.me', c: 'var(--color-accent)' }]); }
+      if (fm[1] === FLAG) { this.burst(innerWidth / 2, innerHeight / 2, 90, 420); this.print([echo, { t: '[ OK ] flag accepted. nice work — now go say hi: linkedin.com/in/khizar-ahmed9', c: 'var(--color-accent)' }]); }
       else this.print([echo, res('[FAIL] incorrect flag')]);
       return;
     }
@@ -911,6 +914,8 @@ class Component extends DCLogic {
     else if (c === 'whoami') r = 'khizar ahmed, 18 — Information Systems student, Houston, TX';
     else if (SEC_IDS[c] || c === 'home' || c === '~') { const id = SEC_IDS[c] || 'top'; this.go(id); r = 'cd ~/' + (SEC_IDS[c] || ''); }
     else if (c === 'resume') { window.open('resume.pdf', '_blank'); r = 'opening resume.pdf'; }
+    else if (c === 'linkedin') { window.open('https://linkedin.com/in/khizar-ahmed9', '_blank'); r = 'opening linkedin.com/in/khizar-ahmed9'; }
+    else if (c === 'github') { window.open('https://github.com/khizarahmed9', '_blank'); r = 'opening github.com/khizarahmed9'; }
     else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
     else if (c === 'boot' || c === 'reboot') { scrollTo(0, 0); this.setState({ typed: {}, seen: {}, nclP: 0, hackP: 0, hackN: 0, cloneN: 0 }); this.startBoot(); r = 'rebooting…'; }
     else if (c.startsWith('sudo')) r = 'khizar is not in the sudoers file. This incident will be reported.';
@@ -1000,7 +1005,7 @@ class Component extends DCLogic {
         else if (e.key === 'ArrowDown') { e.preventDefault(); this.hi = Math.min(this.hist.length, this.hi + 1); this.setState({ cmd: this.hist[this.hi] || '' }); }
         else if (e.key === 'Tab') {
           e.preventDefault();
-          const all = ['help', 'whoami', 'resume', 'boot', 'clear', 'flag', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
+          const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
           const m = all.filter(x => x.startsWith(s.cmd.toLowerCase()));
           if (m.length === 1) this.setState({ cmd: m[0] }); else if (m.length) this.print([{ t: m.join('  '), c: 'var(--color-neutral-700)' }]);
         }
@@ -1010,7 +1015,7 @@ class Component extends DCLogic {
       outH: s.focused ? '232px' : '62px',
       lab: Object.fromEntries(Object.keys(LABNODES).map(k => [k, { f: s.labSel === k ? 'var(--color-accent-800)' : 'transparent', s: s.labSel === k ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }) }])),
       labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
-      quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'sudo', run: mk('sudo hire khizar') }],
+      quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'github', run: mk('github') }],
     };
   }
 }
