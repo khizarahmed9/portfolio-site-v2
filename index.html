@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Khizar Ahmed · Portfolio</title>
+<meta name="description" content="Khizar Ahmed: Information Systems student and CCNA, CySA+ and Security+ holder looking for IT support, sysadmin and SecOps roles. Home lab, projects, certs and a hidden CTF.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://khiz3r.me/">
+<meta property="og:title" content="Khizar Ahmed · Portfolio">
+<meta property="og:description" content="Khizar Ahmed: Information Systems student and CCNA, CySA+ and Security+ holder looking for IT support, sysadmin and SecOps roles. Home lab, projects, certs and a hidden CTF.">
+<meta property="og:image" content="https://khiz3r.me/og.png">
+<meta property="og:image:width" content="1440">
+<meta property="og:image:height" content="900">
+<meta property="og:image:alt" content="Khizar Ahmed's portfolio: a green phosphor terminal">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="./support.js"></script>
 </head>
 <body>
+<noscript><p style="font-family:monospace;color:#c6f2cb;background:#070a07;padding:24px">Khizar Ahmed · <a href="resume.pdf">resume.pdf</a> · <a href="mailto:website@khiz3r.me">website@khiz3r.me</a> · <a href="https://linkedin.com/in/khizar-ahmed9">LinkedIn</a> · <a href="https://github.com/khizarahmed9">GitHub</a> · This site needs JavaScript.</p></noscript>
 <x-dc>
 <helmet>
 <link rel="stylesheet" href="_ds/industry-b6395b8d-a3de-4d4b-be8f-bb98f19b74cb/styles.css">
@@ -161,7 +172,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
       <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:var(--color-neutral-700);margin-bottom:10px;min-height:1.6em"><span style="color:var(--color-accent-700)">khizar@lab:~$ </span>{{ heroCmd }}</div>
       <p style="font-size:clamp(17px,1.6vw,20px);line-height:1.55;max-width:60ch;margin:0 0 28px;min-height:5.5em;text-wrap:pretty">{{ bio }}<span style="display:inline-block;width:.5em;height:1em;background:var(--color-accent);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite"></span></p>
       <div style="display:flex;flex-wrap:wrap;gap:16px;opacity:{{ rv.hero.o }};transform:{{ rv.hero.t }};transition:opacity .6s ease .2s,transform .7s cubic-bezier(.2,.7,.2,1) .2s">
-        <a class="btn btn-primary blueprint" href="uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf" target="_blank" style="border-bottom:none;white-space:nowrap;flex:none">./resume.pdf<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
+        <a class="btn btn-primary blueprint" href="resume.pdf" target="_blank" style="border-bottom:none;white-space:nowrap;flex:none">./resume.pdf<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
         <button class="btn btn-secondary" onClick="{{ goContact }}">$ contact --now</button>
       </div>
     </div>
@@ -773,7 +784,9 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
-    if (this.props.skipBoot) this.setState({ phase: 'gone', seen: { hero: true } });
+    let booted = false;
+    try { booted = sessionStorage.getItem('booted') === '1'; } catch (e) {}
+    if (this.props.skipBoot || booted) this.setState({ phase: 'gone', seen: { hero: true } });
     else this.startBoot();
     this.tickI = setInterval(() => this.tick(), 28);
     this.startRain(); this.startCross(); this.startMotion();
@@ -844,6 +857,7 @@ class Component extends DCLogic {
   finishBoot() {
     if (this.state.phase !== 'run') return;
     clearInterval(this.bootI);
+    try { sessionStorage.setItem('booted', '1'); } catch (e) {}
     this.setState({ phase: 'out', bootN: BOOT.length, nameP: 0, heroN: 0, bioN: 0, seen: { ...this.state.seen, hero: true } });
     setTimeout(() => this.setState({ phase: 'gone' }), 850);
   }
@@ -896,7 +910,7 @@ class Component extends DCLogic {
     if (c === 'help') r = HELP;
     else if (c === 'whoami') r = 'khizar ahmed, 18 — Information Systems student, Houston, TX';
     else if (SEC_IDS[c] || c === 'home' || c === '~') { const id = SEC_IDS[c] || 'top'; this.go(id); r = 'cd ~/' + (SEC_IDS[c] || ''); }
-    else if (c === 'resume') { window.open('uploads/Khizar%20Ahmed%20Resume%209.22.2026.pdf', '_blank'); r = 'opening resume.pdf'; }
+    else if (c === 'resume') { window.open('resume.pdf', '_blank'); r = 'opening resume.pdf'; }
     else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
     else if (c === 'boot' || c === 'reboot') { scrollTo(0, 0); this.setState({ typed: {}, seen: {}, nclP: 0, hackP: 0, hackN: 0, cloneN: 0 }); this.startBoot(); r = 'rebooting…'; }
     else if (c.startsWith('sudo')) r = 'khizar is not in the sudoers file. This incident will be reported.';
