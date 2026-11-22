@@ -63,6 +63,24 @@
         ],
         "createdAt": "2026-10-15T06:34:08.997Z",
         "reason": "Agent: tight leading is on multi-line display-size condensed headings, not body text (body uses 1.5-1.55)"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "404.html"
+        ],
+        "createdAt": "2026-11-22T06:21:24.151Z",
+        "reason": "agent computed: lowest text pair #6f8a73 on #070a07 is 5.27:1, passes AA"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "404.html"
+        ],
+        "createdAt": "2026-11-22T06:21:24.163Z",
+        "reason": "project CLAUDE.md mandates faint green glow on h1/h2"
       }
     ]
   }
