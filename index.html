@@ -261,7 +261,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
             <line x1="415" y1="92" x2="470" y2="92" stroke-dasharray="4 3"></line>
             <path d="M415 220 H545 V112" stroke-dasharray="4 3"></path>
           </g>
-          <polyline points="{{ trPts }}" fill="none" stroke="var(--color-accent)" stroke-width="2.5" pointer-events="none"></polyline>
+          <polyline ref="{{ trLine }}" fill="none" stroke="var(--color-accent)" stroke-width="2.5" pointer-events="none"></polyline>
           <circle ref="{{ trPkt }}" r="5" fill="var(--color-accent)" opacity="0" pointer-events="none"></circle>
           <g fill="none" stroke-width="1">
             <rect x="250" y="8" width="140" height="40" fill="{{ lab.wan.f }}" stroke="{{ lab.wan.s }}" onMouseEnter="{{ lab.wan.on }}" onClick="{{ lab.wan.on }}" onFocus="{{ lab.wan.on }}" onKeyDown="{{ lab.wan.key }}" tabindex="0" role="button" aria-label="{{ lab.wan.label }}" style="cursor:pointer;transition:fill .25s,stroke .25s"></rect>
@@ -1006,9 +1006,10 @@ class Component extends DCLogic {
     const pkt = this.trPkt.current; if (pkt) pkt.setAttribute('opacity', 0);
     this.print([echo, line('traceroute to ' + LABNODES[k][0] + ', 30 hops max, 60 byte packets', 'var(--color-accent-300)')]);
     const sv = document.querySelector('.labsvg'); if (sv) window.scrollTo({ top: sv.getBoundingClientRect().top + scrollY - 72, behavior: 'smooth' }); // diagram top, so the open command panel doesn't hide the VLAN row
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ tr: { hops, lit: hops.length }, labSel: hops[hops.length - 1] }); this.print(out); return; }
-    this.setState({ tr: { hops, lit: 0 } });
-    const wrap = sv && sv.parentNode;
+    const wrap = sv && sv.parentNode, pan = x => { if (wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = x * sv.clientWidth / 640 - wrap.clientWidth / 2; }; // phones: keep the hop inside the diagram scroll area
+    const lite = (n, sel) => { this.setState(sel ? { tr: { hops, lit: n }, labSel: sel } : { tr: { hops, lit: n } }); if (this.trLine.current) this.trLine.current.setAttribute('points', hops.slice(0, n).flatMap((h, j) => j ? TR_SEG(hops[j - 1], h).slice(1) : [TR_XY[h]]).join(' ')); }; // points set here: a {{ }} binding would hit the SVG parser before hydration
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { const last = hops[hops.length - 1]; lite(hops.length, last); if (sv) pan(TR_XY[last][0]); this.print(out); return; }
+    lite(0);
     const segs = hops.map((n, i) => i ? TR_SEG(hops[i - 1], n) : [TR_XY[n]]);
     let i = 0, t0 = 0;
     const step = now => {
@@ -1017,9 +1018,9 @@ class Component extends DCLogic {
       let d = Math.min(1, (now - t0) / dur) * len, [x, y] = seg[0];
       for (let j = 1; j < seg.length && d > 0; j++) { const L = Math.hypot(seg[j][0] - seg[j - 1][0], seg[j][1] - seg[j - 1][1]), f = Math.min(1, d / L); x = seg[j - 1][0] + (seg[j][0] - seg[j - 1][0]) * f; y = seg[j - 1][1] + (seg[j][1] - seg[j - 1][1]) * f; d -= L; }
       if (pkt) { pkt.setAttribute('cx', x); pkt.setAttribute('cy', y); pkt.setAttribute('opacity', 1); }
-      if (wrap && wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = x * sv.clientWidth / 640 - wrap.clientWidth / 2; // phones: keep the packet inside the diagram scroll area
+      if (sv) pan(x);
       if (now - t0 >= dur) {
-        this.setState({ tr: { hops, lit: i + 1 }, labSel: hops[i] }); this.print([out[i]]);
+        lite(i + 1, hops[i]); this.print([out[i]]);
         if (++i === hops.length) { this.trT = setTimeout(() => { if (pkt) pkt.setAttribute('opacity', 0); if (out.length > i) this.print(out.slice(i)); }, 500); return; }
         t0 = now;
       }
@@ -1027,7 +1028,7 @@ class Component extends DCLogic {
     };
     this.trT = setTimeout(() => { this.trRaf = requestAnimationFrame(step); }, 700); // let the smooth scroll land first
   }
-  trPkt = React.createRef();
+  trPkt = React.createRef(); trLine = React.createRef();
   renderVals() {
     const s = this.state, seen = s.seen;
     const rvi = (k, i, step = 70) => seen[k] ? { o: 1, t: 'none', d: (i * step) + 'ms' } : { o: 0, t: 'translateY(18px)', d: '0ms' };
@@ -1118,7 +1119,7 @@ class Component extends DCLogic {
       },
       onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
       lab: Object.fromEntries(Object.keys(LABNODES).map(k => { const hot = s.labSel === k || (s.tr && s.tr.hops.slice(0, s.tr.lit).includes(k)); return [k, { f: hot ? 'var(--color-accent-800)' : 'transparent', s: hot ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }), label: LABNAMES[k], key: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ labSel: k }); } } }]; })),
-      trPkt: this.trPkt, trPts: s.tr ? s.tr.hops.slice(0, s.tr.lit).flatMap((n, i) => i ? TR_SEG(s.tr.hops[i - 1], n).slice(1) : [TR_XY[n]]).join(' ') : '',
+      trPkt: this.trPkt, trLine: this.trLine,
       outH: s.focused ? '232px' : s.wide ? '62px' : '0px',
       labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
       quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'github', run: mk('github') }],
