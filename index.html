@@ -942,7 +942,7 @@ class Component extends DCLogic {
       if (!t) r = 'themes: green · amber · white (current: ' + (html.dataset.theme || 'green') + ')';
       else if (!['green', 'amber', 'white'].includes(t)) r = 'theme: unknown "' + t + '" — try green · amber · white';
       else { if (t === 'green') delete html.dataset.theme; else html.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) {}
-        const sv = document.querySelector('.labsvg'); if (sv) { sv.style.display = 'none'; sv.getBoundingClientRect(); sv.style.display = 'block'; } // Chromium kept animated lab packets painted in the old color until the SVG is re-laid out
+        const sv = document.querySelector('.labsvg'); if (sv) { const x = sv.parentNode.scrollLeft; sv.style.display = 'none'; sv.getBoundingClientRect(); sv.style.display = 'block'; sv.parentNode.scrollLeft = x; } // Chromium kept animated lab packets painted in the old color until the SVG is re-laid out
         r = 'theme set: ' + t; }
     }
     else if (c.startsWith('sudo')) r = 'khizar is not in the sudoers file. This incident will be reported.';
