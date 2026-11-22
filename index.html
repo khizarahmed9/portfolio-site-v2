@@ -107,7 +107,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   .hnav{padding-right:48px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 }
 /* touch: 44px tap targets; !important beats the inline all:unset styles */
-@media (pointer:coarse){header button,header nav a,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,header nav a,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}}
+@media (pointer:coarse){header button,header nav a,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,header nav a,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}.glink{display:inline-flex!important;align-items:center;min-height:44px!important}}
 </style>
 </helmet>
 
@@ -562,7 +562,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   <div style="max-width:1240px;margin:0 auto;padding:10px clamp(16px,4vw,40px) 12px">
     <div aria-live="polite" style="display:flex;flex-direction:column;justify-content:flex-end;gap:2px;margin-bottom:6px;height:{{ outH }};overflow:hidden;transition:height .45s cubic-bezier(.2,.7,.2,1)">
       <sc-for list="{{ out }}" as="o">
-        <div style="white-space:pre-wrap;color:{{ o.c }}"><sc-for list="{{ o.links }}" as="l"><a href="{{ l.href }}" onClick="{{ l.go }}" onMouseDown="{{ l.keep }}" style="color:inherit;margin-right:2ch">{{ l.label }}</a></sc-for>{{ o.t }}</div>
+        <div style="white-space:pre-wrap;color:{{ o.c }}"><sc-for list="{{ o.links }}" as="l"><a class="glink" href="{{ l.href }}" onClick="{{ l.go }}" onMouseDown="{{ l.keep }}" style="color:inherit;margin-right:2ch">{{ l.label }}</a></sc-for>{{ o.t }}</div>
       </sc-for>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
@@ -797,7 +797,7 @@ class Component extends DCLogic {
   componentDidMount() {
     let booted = false;
     try { booted = sessionStorage.getItem('booted') === '1'; } catch (e) {}
-    const h = decodeURIComponent(location.hash.slice(1));
+    const h = location.hash.slice(1);
     this.deepLink = Object.values(SEC_IDS).includes(h) ? h : null;
     if (this.props.skipBoot || booted) { this.setState({ phase: 'gone', seen: { hero: true } }); setTimeout(() => this.landDeepLink(), 50); }
     else this.startBoot();
