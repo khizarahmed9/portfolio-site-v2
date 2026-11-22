@@ -54,6 +54,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
 .labsvg{min-width:0}
 @media (min-width:1000px){.labfig{display:grid;grid-template-columns:minmax(0,3fr) minmax(220px,1fr);gap:28px;align-items:center}.labfig .labinfo{border-top:0!important;margin-top:0!important;padding:0 0 0 24px!important;border-left:1px solid var(--color-divider)}}
 @media (max-width:759px){.labsvg{min-width:640px}}
+@media (max-width:759px) and (pointer:coarse){.labsvg{min-width:704px}} /* 1.1x scale: 40-unit lab nodes become 44px tap targets */
 /* certs: full-bleed boot-log band */
 .band{position:relative;margin-inline:calc(50% - 50vw);padding-inline:calc(50vw - 50%);background:color-mix(in srgb,var(--color-accent-900) 60%,transparent);border-top:1px solid var(--color-accent-800);border-bottom:1px solid var(--color-accent-800)}
 .log{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.6}
@@ -106,7 +107,7 @@ html{scrollbar-color:var(--color-neutral-400) var(--color-bg)}
   .hnav{padding-right:48px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 }
 /* touch: 44px tap targets; !important beats the inline all:unset styles */
-@media (pointer:coarse){header button,main a,main button,input{min-height:44px!important;display:inline-flex!important;align-items:center!important;box-sizing:border-box!important}}
+@media (pointer:coarse){header button,main a,main button,input{min-height:44px!important;box-sizing:border-box!important}header nav button,main button[style*="all:unset"]{display:inline-flex!important;align-items:center}}
 </style>
 </helmet>
 
@@ -1022,8 +1023,8 @@ class Component extends DCLogic {
         else if (e.key === 'Escape') this.inputRef.current && this.inputRef.current.blur();
       },
       onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
-      outH: s.focused ? '232px' : '62px',
       lab: Object.fromEntries(Object.keys(LABNODES).map(k => [k, { f: s.labSel === k ? 'var(--color-accent-800)' : 'transparent', s: s.labSel === k ? 'var(--color-accent)' : 'var(--color-text)', on: () => s.labSel !== k && this.setState({ labSel: k }), label: LABNAMES[k], key: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ labSel: k }); } } }])),
+      outH: s.focused ? '232px' : s.wide ? '62px' : '0px',
       labInfo: { host: LABNODES[s.labSel][0], text: LABNODES[s.labSel][1] },
       quick: [{ label: 'help', run: mk('help') }, { label: 'resume', run: mk('resume') }, { label: 'github', run: mk('github') }],
     };
