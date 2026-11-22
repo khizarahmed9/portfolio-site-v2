@@ -17,6 +17,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try{var t=localStorage.getItem('theme');if(t==='amber'||t==='white')document.documentElement.dataset.theme=t}catch(e){}</script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -30,6 +31,13 @@
 :root{--color-bg:#070a07;--color-surface:#0e130e;--color-text:#c6f2cb;--color-accent:#3ddc68;--color-accent-2:#3ddc68;--color-divider:color-mix(in srgb,#c6f2cb 18%,transparent);
 --color-accent-100:#e4ffe8;--color-accent-200:#bff5c9;--color-accent-300:#8cedA2;--color-accent-400:#5fe07e;--color-accent-500:#3ddc68;--color-accent-600:#2fb855;--color-accent-700:#56e27a;--color-accent-800:#123a1c;--color-accent-900:#030603;
 --color-neutral-100:#101510;--color-neutral-200:#182019;--color-neutral-300:#243025;--color-neutral-400:#374539;--color-neutral-500:#4b5f4e;--color-neutral-600:#6f8a73;--color-neutral-700:#8fab93;--color-neutral-800:#b1cab4;--color-neutral-900:#d3e6d5}
+/* theme command: amber ≈ P3, white ≈ P4; same token roles as green */
+:root[data-theme=amber]{--color-bg:#0a0805;--color-surface:#14100a;--color-text:#ffe2b0;--color-accent:#ffb000;--color-accent-2:#ffb000;--color-divider:color-mix(in srgb,#ffe2b0 18%,transparent);
+--color-accent-100:#fff3dc;--color-accent-200:#ffe2b0;--color-accent-300:#ffd27a;--color-accent-400:#ffc04a;--color-accent-500:#ffb000;--color-accent-600:#d99500;--color-accent-700:#ffbf3d;--color-accent-800:#3d2a05;--color-accent-900:#060402;
+--color-neutral-100:#15120c;--color-neutral-200:#201b12;--color-neutral-300:#30291c;--color-neutral-400:#463c2a;--color-neutral-500:#5f523a;--color-neutral-600:#8a7a5c;--color-neutral-700:#ab9a7a;--color-neutral-800:#cab99a;--color-neutral-900:#e6d8bd}
+:root[data-theme=white]{--color-bg:#07080a;--color-surface:#0f1114;--color-text:#d6dee8;--color-accent:#f2f6ff;--color-accent-2:#f2f6ff;--color-divider:color-mix(in srgb,#d6dee8 18%,transparent);
+--color-accent-100:#ffffff;--color-accent-200:#e9eff8;--color-accent-300:#d2dbe7;--color-accent-400:#bcc7d5;--color-accent-500:#f2f6ff;--color-accent-600:#a9b6c6;--color-accent-700:#dfe7f2;--color-accent-800:#232b37;--color-accent-900:#030405;
+--color-neutral-100:#101215;--color-neutral-200:#181b20;--color-neutral-300:#242830;--color-neutral-400:#373c45;--color-neutral-500:#4b525d;--color-neutral-600:#727a86;--color-neutral-700:#929aa6;--color-neutral-800:#b3bac4;--color-neutral-900:#d4d9e0}
 h1,h2{text-shadow:0 0 22px color-mix(in srgb,var(--color-accent) 35%,transparent)}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--color-bg);color:var(--color-text);overflow-x:clip}
@@ -686,7 +694,7 @@ const LABNODES = {
   v999: ['vlan999.isolated', 'Isolated targets reachable only from Kali: Vulnhub and HackMyVM boxes.'],
 };
 const LABNAMES = { wan: 'home router · WAN', br0: 'vmbr0 · OVS bridge', siem: 'Wazuh SIEM + NIDS', nix: 'NixOS · Portainer', vpn: 'WireGuard · OpenVPN', pf: 'pfSense VM', br1: 'vmbr1 · VLAN trunk', nat: 'NATIVE · Kali Linux', v80: 'VLAN 80 · Active Directory lab', v666: 'VLAN 666 · untrusted · internet', v999: 'VLAN 999 · isolated · Kali only' };
-const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · flag · boot · clear · keys 0–9 jump';
+const HELP = 'cmds: whoami · certs · skills · lab · projects · activity · hackhcc · volunteer · edu · contact · resume · linkedin · github · grep <term> · flag · boot · theme [green|amber|white] · clear · keys 0–9 jump';
 
 class Component extends DCLogic {
   state = { bootN: 0, phase: 'run', nameP: 0, heroN: 0, bioN: 0, seen: {}, typed: {}, filter: 'all', cmd: '', out: [{ t: 'portfolio shell ready — ' + HELP, c: 'var(--color-accent-300)' }], now: new Date(), t0: Date.now(), scroll: 0, moonT: 0, focused: false, labSel: 'pf', active: 'top', xl: false, navScr: null, wide: typeof innerWidth === 'undefined' ? true : innerWidth >= 760, nclP: 0, hackP: 0, hackN: 0 };
@@ -764,7 +772,6 @@ class Component extends DCLogic {
   startRain() {
     const cv = this.rainRef.current; if (!cv) return;
     const ctx = cv.getContext('2d');
-    const acc = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#3ddc68';
     let W = 0, H = 0, cols = [];
     const fit = () => { const r = cv.getBoundingClientRect(); W = cv.width = r.width; H = cv.height = r.height; cols = Array.from({ length: Math.ceil(W / 18) }, () => -Math.random() * H / 16 | 0); };
     fit(); this.onResize = fit; addEventListener('resize', fit);
@@ -772,10 +779,11 @@ class Component extends DCLogic {
     const draw = t => {
       this.rainRaf = requestAnimationFrame(draw);
       if (t - last < 60) return; last = t;
-      ctx.fillStyle = 'rgba(7,10,7,.16)'; ctx.fillRect(0, 0, W, H);
+      const css = getComputedStyle(document.documentElement), tok = k => css.getPropertyValue(k).trim(); // read per frame so `theme` recolors live
+      ctx.globalAlpha = .16; ctx.fillStyle = tok('--color-bg'); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
       ctx.font = "13px 'JetBrains Mono', monospace";
       cols.forEach((y, i) => {
-        ctx.fillStyle = Math.random() < .05 ? '#e4ffe8' : acc;
+        ctx.fillStyle = Math.random() < .05 ? tok('--color-accent-100') : tok('--color-accent');
         ctx.fillText(RAIN[(Math.random() * RAIN.length) | 0], i * 18, y * 16);
         cols[i] = (y * 16 > H && Math.random() > .97) ? 0 : y + 1;
       });
@@ -929,6 +937,14 @@ class Component extends DCLogic {
     else if (c === 'github') { window.open('https://github.com/khizarahmed9', '_blank'); r = 'opening github.com/khizarahmed9'; }
     else if (c === 'email') { location.href = 'mailto:website@khiz3r.me'; r = 'opening mail client'; }
     else if (c === 'boot' || c === 'reboot') { scrollTo(0, 0); this.setState({ typed: {}, seen: {}, nclP: 0, hackP: 0, hackN: 0, cloneN: 0 }); this.startBoot(); r = 'rebooting…'; }
+    else if (c === 'theme' || c.startsWith('theme ')) {
+      const t = c.slice(6).trim(), html = document.documentElement;
+      if (!t) r = 'themes: green · amber · white (current: ' + (html.dataset.theme || 'green') + ')';
+      else if (!['green', 'amber', 'white'].includes(t)) r = 'theme: unknown "' + t + '" — try green · amber · white';
+      else { if (t === 'green') delete html.dataset.theme; else html.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) {}
+        const sv = document.querySelector('.labsvg'); if (sv) { sv.style.display = 'none'; sv.getBoundingClientRect(); sv.style.display = 'block'; } // Chromium kept animated lab packets painted in the old color until the SVG is re-laid out
+        r = 'theme set: ' + t; }
+    }
     else if (c.startsWith('sudo')) r = 'khizar is not in the sudoers file. This incident will be reported.';
     else r = 'command not found: ' + c + " — try 'help'";
     this.setState({ cmd: '' });
@@ -1016,7 +1032,7 @@ class Component extends DCLogic {
         else if (e.key === 'ArrowDown') { e.preventDefault(); this.hi = Math.min(this.hist.length, this.hi + 1); this.setState({ cmd: this.hist[this.hi] || '' }); }
         else if (e.key === 'Tab') {
           e.preventDefault();
-          const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
+          const all = ['help', 'whoami', 'resume', 'linkedin', 'github', 'boot', 'clear', 'flag', 'theme green', 'theme amber', 'theme white', 'grep ', 'decode ', 'submit ', 'sudo ', ...Object.keys(SEC_IDS)];
           const m = all.filter(x => x.startsWith(s.cmd.toLowerCase()));
           if (m.length === 1) this.setState({ cmd: m[0] }); else if (m.length) this.print([{ t: m.join('  '), c: 'var(--color-neutral-700)' }]);
         }
