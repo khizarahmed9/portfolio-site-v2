@@ -7,8 +7,8 @@
     "binding": "ASSETS",
     // unmatched paths get 404.html with a 404 status
     "not_found_handling": "404-page",
-    // only `/` hits the worker first (curl text view); every other path is served straight from assets
-    "run_worker_first": ["/"]
+    // only these hit the worker first (curl text view, markdown for agents); every other path is served straight from assets
+    "run_worker_first": ["/", "/index.md", "/llms.txt"]
   },
   "observability": {
     "logs": {
